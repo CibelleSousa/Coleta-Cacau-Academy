@@ -1,0 +1,159 @@
+.pageContainer {
+    max-width: 56rem; /* max-w-4xl */
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+}
+
+.pageTitle {
+    font-size: 1.875rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+    .pageTitle {
+        font-size: 2.25rem;
+    }
+}
+
+.pageSubtitle {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+/* Certificate Wrapper with Gradient Border */
+.certWrapper {
+    margin-top: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 1.5rem;
+    background: linear-gradient(to bottom right, rgba(47, 155, 120, 0.15), var(--card), var(--card));
+    padding: 4px; /* p-1 effect */
+}
+
+.certInner {
+    background-color: var(--card);
+    border-radius: 1.4rem;
+    padding: 2rem;
+}
+
+@media (min-width: 768px) {
+    .certInner {
+        padding: 3rem;
+    }
+}
+
+/* Header Row */
+.certHeader {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.certLabel {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.certTitle {
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+@media (min-width: 768px) {
+    .certTitle {
+        font-size: 1.875rem;
+    }
+}
+
+.certSubtitle {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+.certUserName {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.certIconBox {
+    display: grid;
+    place-items: center;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 1rem;
+    background-color: rgba(47, 155, 120, 0.15);
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+/* Progress Section */
+.progressSection {
+    margin-top: 2rem;
+}
+
+.progressTrack {
+    width: 100%;
+    height: 0.5rem;
+    background-color: var(--muted);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background-color: var(--primary);
+    border-radius: 9999px;
+    transition: width 0.3s ease-in-out;
+}
+
+.progressText {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+/* Locked Button */
+.lockedBtn {
+    margin-top: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    cursor: not-allowed;
+    border: none;
+}
+
+/* Download Button */
+.downloadBtn {
+    margin-top: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.downloadBtn:hover {
+    opacity: 0.9;
+}

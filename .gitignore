@@ -1,0 +1,25 @@
+# ==========================================
+# .gitignore da RAIZ DO PROJETO
+# ==========================================
+
+# Variáveis de Ambiente Globais (NUNCA SUBIR)
+.env
+.env.local
+.env.production
+.env.development
+
+# Dependências Globais (Caso instale algo na raiz futuramente)
+node_modules/
+.pnp
+.pnp.js
+
+# Sistema Operacional e IDEs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs globais
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

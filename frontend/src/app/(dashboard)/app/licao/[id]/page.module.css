@@ -1,0 +1,289 @@
+.loadingText { 
+    color: var(--muted-foreground); 
+}
+
+.pageContainer {
+    max-width: 768px; /* max-w-3xl */
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-weight: 500;
+}
+
+.backLink:hover {
+    color: var(--foreground);
+}
+
+.metaRow {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+.lessonTitle {
+    margin-top: 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.article {
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: rgba(250, 250, 250, 0.9);
+    line-height: 1.7;
+}
+
+.paragraph {
+    margin-top: 1rem;
+}
+
+.strongText {
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+.heading {
+    margin-top: 2rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.mutedParagraph {
+    color: var(--muted-foreground);
+    font-weight: 500;
+}
+
+/* Code Block */
+.codeBlockWrapper {
+    margin-top: 0.75rem;
+    min-height: 14rem;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    background-color: #0b0b0b;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    white-space: pre;
+}
+
+.codeBlock {
+    color: rgba(250, 250, 250, 0.9);
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+}
+
+/* Contextual Box */
+.contextBox {
+    margin-top: 1.5rem;
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+}
+
+/* Footer Nav */
+.footerNav {
+    margin-top: 3rem;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .footerNav {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.navCard {
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    font-size: inherit;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.navCard:hover {
+    border-color: rgba(47, 155, 120, 0.4);
+}
+
+.navCardRight {
+    text-align: right;
+}
+
+.navLabel {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.navCardRight .navLabel {
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.navTitle {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.concluirBtn {
+    border: none;
+    background-color: var(--primary);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    color: var(--primary-foreground);
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    cursor: pointer;
+}
+
+.markdownBody {
+    color: var(--foreground);
+    line-height: 1.7;
+    font-size: 1.125rem;
+}
+
+/* Estilizando os títulos gerados pelo Markdown */
+.markdownBody h1, 
+.markdownBody h2, 
+.markdownBody h3 {
+    color: var(--primar-foreground);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.markdownBody h2 {
+    font-size: 1.75rem;
+}
+
+/* Estilizando os parágrafos */
+.markdownBody p {
+    margin-bottom: 1.25rem;
+}
+
+/* Deixando as imagens responsivas para não quebrarem a tela */
+.markdownBody img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilizando links e listas */
+.markdownBody a {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.markdownBody ul, 
+.markdownBody ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+}
+
+/* Blocos de código (o famoso fundo escuro) */
+.markdownBody pre {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+}
+
+.markdownBody code {
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/*Estilo para tabelas (Markdown GFM)*/
+.markdownBody table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    text-align: left;
+    /* Torna a tabela rolável horizontalmente em telas pequenas */
+    display: block; 
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Em telas maiores, volta ao comportamento normal de tabela */
+@media (min-width: 640px) {
+    .markdownBody table {
+        display: table;
+        white-space: normal;
+    }
+}
+
+.markdownBody thead {
+    background-color: var(--primary);
+    border-bottom: 2px solid var(--border);
+}
+
+.markdownBody th {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: var(--primary-foreground);
+    border: 1px solid var(--border);
+}
+
+.markdownBody td {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    color: var(--foreground);
+    vertical-align: top;
+}
+
+/* Listras alternadas no corpo da tabela */
+.markdownBody tbody tr:nth-child(even) {
+    background-color: var(--muted);
+}
+
+/* Efeito hover nas linhas */
+.markdownBody tbody tr:hover {
+    background-color: var(--primary-10-opacity);
+}
+
+/* Garantir que códigos inline dentro da tabela não quebrem o layout */
+.markdownBody td code {
+    font-size: 0.85em;
+    background-color: var(--highlight);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+}

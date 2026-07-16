@@ -1,0 +1,179 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+}
+
+.backLink:hover {
+    color: var(--foreground);
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--foreground);
+}
+
+.description {
+    margin-top: 0.5rem;
+    color: var(--muted-foreground);
+}
+
+.quizList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.questionCard {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.questionText {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--foreground);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.questionText code {
+    background-color: var(--highlight);
+    color: var(--foreground);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+}
+
+.optionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.optionLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.optionLabel:hover {
+    border-color: var(--primary);
+}
+
+.optionSelected {
+    border-color: var(--primary);
+    background-color: rgba(47, 155, 120, 0.1);
+}
+
+.radioInput {
+    accent-color: var(--primary);
+    width: 1.125rem;
+    height: 1.125rem;
+    flex-shrink: 0;
+}
+
+/* Estilos para o container do texto da opção (Markdown) */
+.optionTextContainer {
+    flex: 1;
+}
+
+.optionTextContainer p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Estilização do código inline (crases) dentro das opções */
+.optionTextContainer code {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+}
+
+.submitBtn {
+    margin-top: 1rem;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.875rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.submitBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.resultCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    padding: 3rem;
+}
+
+.resultIconSuccess {
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+.resultIconFail {
+    color: #EF4444;
+    margin-bottom: 1rem;
+}
+
+.resultTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.resultText {
+    color: var(--muted-foreground);
+    margin-bottom: 0.5rem;
+}
+
+.resultScore {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--foreground);
+    margin-bottom: 1.5rem;
+}

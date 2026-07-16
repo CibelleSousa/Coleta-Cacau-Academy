@@ -1,0 +1,16 @@
+.base {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    object-fit: cover;
+    overflow: hidden;
+}
+
+.fallback {
+    background-color: rgba(47, 155, 120, 0.2);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+    user-select: none;
+}

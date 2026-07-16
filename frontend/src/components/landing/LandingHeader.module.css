@@ -1,0 +1,93 @@
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background);
+    backdrop-filter: blur(10px);
+}
+
+.container {
+    max-width: 1825px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1rem;
+}
+
+.brandContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logoBox {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--primary);
+    color: var( --background);
+}
+
+.brandText {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.brandName {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--foreground);
+}
+
+.brandSubtitle {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted-foreground);
+}
+
+.actionsGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.themeToggleButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    color: var(--foreground);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.themeToggleButton:hover {
+    background-color: var(--muted);
+    color: var(--primary);
+}
+
+.loginButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--foreground);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.loginButton:hover {
+    background-color: var(--btn-background);
+    color: var(--card);
+}

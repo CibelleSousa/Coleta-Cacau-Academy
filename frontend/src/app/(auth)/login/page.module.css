@@ -1,0 +1,123 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background);
+    padding: 1.5rem;
+}
+
+.card {
+    width: 100%;
+    max-width: 28rem;
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted-foreground, #666);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    align-self: flex-start; /* Joga ele pro cantinho esquerdo */
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.backLink:hover {
+    color: var(--foreground, #111);
+    transform: translateX(-1px);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.logo {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.75rem;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.brandContainer {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.brandName {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.brandSubtitle {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted-foreground);
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.subtitle {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    line-height: 1.5;
+    margin-bottom: 2.5rem;
+    max-width: 20rem;
+}
+
+.googleButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    background-color: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    color: var(--foreground);
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s, border-color 0.2s;
+    text-decoration: none;
+}
+
+.googleButton:hover {
+    background-color: var(--muted);
+    border-color: var(--primary);
+}
+
+.googleIcon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.footerText {
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "src/services/api.ts",
+    "src/store/index.ts",
+    "src/store/slices/authSlice.ts",
+    "src/store/slices/coursesSlice.ts",
+    "src/utils/formateDate.ts",
+    "src/hooks/useTheme.ts"
+  ],
+  "out": "docs",
+  "plugin": ["typedoc-plugin-markdown"],
+  "name": "Coleta-Cacau Academy - Core Logic",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "disableSources": true
+}

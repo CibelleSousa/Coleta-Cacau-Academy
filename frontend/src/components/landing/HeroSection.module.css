@@ -1,0 +1,113 @@
+.heroSection {
+    position: relative;
+    overflow: hidden;
+}
+
+.heroBg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse at top, rgba(47, 155, 120, 0.18), transparent 60%);
+}
+
+.heroContainer {
+    max-width: 1152px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+
+.heroTitle {
+    font-size: 2.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    color: var(--foreground);
+}
+
+.textPrimary {
+    color: var(--primary);
+}
+
+.heroSubtitle {
+    max-width: 42rem;
+    margin: 1.5rem auto 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--muted-foreground);
+}
+
+.strongText {
+    color: var(--foreground);
+    font-weight: 700;
+}
+
+.ctaContainer {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ctaButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: var(--primary-foreground);
+    color: var(--text-fixed);
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 10px 15px -3px rgba(47, 155, 120, 0.2);
+    transition: transform 0.2s;
+}
+
+.ctaButton:hover {
+    transform: scale(1.02);
+}
+
+.ctaNote {
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+}
+
+.statsContainer {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 28rem;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 1.5rem;
+    text-align: center;
+}
+
+.statNumber {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--foreground);
+}
+
+.statLabel {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    margin-top: 0.25rem;
+}
+
+@media (min-width: 768px) {
+    .heroContainer {
+        padding: 6rem 3rem;
+    }
+    .heroTitle {
+        font-size: 3.75rem;
+    }
+    .ctaContainer {
+        flex-direction: row;
+        justify-content: center;
+    }
+}

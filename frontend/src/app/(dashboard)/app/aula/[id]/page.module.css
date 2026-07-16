@@ -1,0 +1,478 @@
+.loadingText { 
+    color: var(--muted-foreground); 
+}
+
+.pageContainer {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+.breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+.breadcrumbs a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.breadcrumbs a:hover {
+    color: var(--foreground);
+}
+
+.breadcrumbActive {
+    color: var(--foreground);
+}
+
+.mainGrid {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+    .mainGrid {
+        grid-template-columns: minmax(0, 1fr) 22rem;
+    }
+}
+
+.leftColumn {
+    min-width: 0;
+}
+
+/* Video Player Placeholder */
+.videoWrapper {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: linear-gradient(to bottom right, #0a0a0a, var(--card), #0a0a0a);
+}
+
+.videoPlayButton {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.playCircle {
+    display: grid;
+    place-items: center;
+    width: 5rem;
+    height: 5rem;
+    border-radius: 9999px;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    box-shadow: 0 10px 15px -3px rgba(47, 155, 120, 0.3);
+    transition: transform 0.2s;
+}
+
+.playCircle:hover {
+    transform: scale(1.05);
+}
+
+.videoMetaTop {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.videoControlsBottom {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1rem;
+    pointer-events: none; /* Let the play button handle clicks */
+}
+
+.progressTrackThin {
+    height: 0.25rem;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progressFillThin {
+    height: 100%;
+    background-color: var(--primary);
+}
+
+.controlsRow {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.maximizeIconContainer { 
+    margin-left: auto; 
+    display: flex; 
+}
+
+/* Title Row */
+.titleRow {
+    margin-top: 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.lessonTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.lessonSubtitle {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+.buttonRow { 
+    display: flex; 
+    gap: 0.75rem; 
+}
+
+.nextBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.625rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.completeBtn { 
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--muted); 
+    color: var(--primary-foreground); 
+    padding: 0.625rem 1rem; 
+    border-radius: 0.5rem; 
+    font-size: 0.875rem; 
+    font-weight: 600; 
+    text-decoration: none; 
+    border: none; 
+    cursor: pointer; 
+}
+
+.completeBtnDone { 
+    background-color: var(--primary);
+    opacity: 0.7; 
+}
+
+/* Cards */
+.card {
+    margin-top: 1rem;
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+}
+
+.cardText {
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+.strongText { 
+    color: var(--foreground); 
+}
+
+/* Rating */
+.ratingRow {
+    margin-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.starButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+}
+
+.starActive {
+    color: var(--primary);
+    fill: var(--primary);
+    transition: color 0.1s;
+}
+
+.starInactive {
+    color: rgba(113, 113, 122, 0.5);
+    transition: color 0.1s;
+}
+
+.starInactive:hover {
+    color: var(--primary);
+}
+
+.ratingText {
+    margin-left: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+/* Comments */
+.cardHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.commentInputRow {
+    margin-top: 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.avatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    background-color: var(--muted);
+    flex-shrink: 0;
+}
+
+.inputWrapper {
+    flex: 1;
+    min-width: 0;
+}
+
+.textarea {
+    width: 100%;
+    resize: none;
+    border: 1px solid var(--border);
+    background-color: var(--background);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--foreground);
+    font-family: inherit;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.publishRow {
+    margin-top: 0.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.publishBtn {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.375rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.publishBtn:disabled {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    cursor: not-allowed;
+}
+
+.commentList {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.commentItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.commentAvatar {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    background-color: rgba(47, 155, 120, 0.15);
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+}
+
+.commentContent {
+    flex: 1;
+    min-width: 0;
+}
+
+.commentMeta {
+    font-size: 0.875rem;
+}
+
+.commentAuthor {
+    font-weight: 600;
+}
+
+.commentTime {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}
+
+.commentText {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.likeBtn {
+    margin-top: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.likeBtn:hover {
+    color: var(--primary);
+}
+
+/* Playlist Sidebar */
+.playlistSidebar {
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    border-radius: var(--radius);
+    overflow: hidden;
+    align-self: start;
+}
+
+@media (min-width: 1024px) {
+    .playlistSidebar {
+        position: sticky;
+        top: 1.5rem;
+    }
+}
+
+.playlistHeader {
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+}
+
+.playlistLabel {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.playlistTitle {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.playlistList {
+    max-height: 28rem;
+    overflow-y: auto;
+}
+
+.playlistLink {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--border);
+}
+
+.playlistLink:last-child {
+    border-bottom: none;
+}
+
+.playlistLinkActive {
+    background-color: rgba(47, 155, 120, 0.15);
+}
+
+.playlistLinkInactive:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.playlistIconBox {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.375rem;
+    flex-shrink: 0;
+}
+
+.iconBoxActive {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+.iconBoxDone {
+    background-color: rgba(47, 155, 120, 0.2);
+    color: var(--primary);
+}
+
+.iconBoxDefault {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+}
+
+.playlistLessonTitle {
+    font-size: 0.875rem;
+}
+
+.playlistLessonTitleActive {
+        font-weight: 600;
+}
+
+.playlistLessonTime {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}

@@ -1,0 +1,202 @@
+.pageContainer {
+    max-width: 768px; /* max-w-3xl */
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+}
+
+/* Profile Header Card */
+.profileCard {
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.avatar {
+    width: 5rem; /* h-20 w-20 */
+    height: 5rem;
+    border-radius: 9999px;
+    background-color: var(--muted);
+    object-fit: cover;
+}
+
+.userInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.nameRow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.userName {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted-foreground);
+    padding: 0.25rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.editBtn:hover {
+    background-color: var(--muted);
+    color: var(--foreground);
+}
+
+.editNameRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nameInput {
+    background-color: var(--background);
+    border: 1px solid var(--primary);
+    color: var(--foreground);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    outline: none;
+    width: 100%;
+    max-width: 300px;
+}
+
+.saveBtn, .cancelBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border: none;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.saveBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cancelBtn {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+}
+
+.cancelBtn:hover {
+    color: #EF4444;
+}
+
+.emailRow {
+    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+.badge {
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: rgba(47, 155, 120, 0.15);
+    color: var(--primary);
+    padding: 0.25rem 0.625rem;
+    border-radius: 9999px;
+}
+
+.logoutBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--border);
+    background: none;
+    color: inherit;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.logoutBtn:hover {
+    background-color: var(--muted);
+}
+
+/* Stats Grid */
+.statsGrid {
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 640px) {
+    .statsGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.statCard {
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+}
+
+.statTitle {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+.statValue {
+    margin-top: 0.25rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.progressTrack {
+    margin-top: 1rem;
+    width: 100%;
+    height: 0.5rem;
+    background-color: var(--muted);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background-color: var(--primary);
+    border-radius: 9999px;
+}
+
+.statPct {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+}

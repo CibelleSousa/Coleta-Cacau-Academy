@@ -1,0 +1,15 @@
+.errorContainer {
+    border: 1px solid #EF4444;
+    background-color: rgba(239, 68, 68, 0.1);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+}
+
+.errorText {
+    color: #EF4444;
+    font-weight: 600;
+}
+
+.mutedText {
+    color: var(--muted-foreground);
+}

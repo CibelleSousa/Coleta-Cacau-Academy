@@ -1,0 +1,51 @@
+import Link from 'next/link';
+import { Sprout, ArrowLeft } from 'lucide-react';
+import styles from './page.module.css';
+
+// Fallback to localhost for development if the env var is missing
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+export default function LoginPage() {
+    return (
+        <div className={styles.container}>
+            <div className={styles.card}>
+                <Link href="/" className={styles.backLink}>
+                    <ArrowLeft size={16} />
+                    Voltar
+                </Link>
+                <div className={styles.header}>
+                    <div className={styles.logo}>
+                        <Sprout size={28} />
+                    </div>
+                    <div className={styles.brandContainer}>
+                        <span className={styles.brandName}>Coleta-Cacau</span>
+                        <span className={styles.brandSubtitle}>Academy</span>
+                    </div>
+                </div>
+
+                <h1 className={styles.title}>Bem-vindo de volta 🌱</h1>
+                <p className={styles.subtitle}>
+                    Entre para continuar sua jornada construindo aplicativos React Native para o campo.
+                </p>
+
+                <a 
+                href={`${API_URL}/auth/google`} 
+                className={styles.googleButton}
+                aria-label="Entrar com Google"
+                >
+                    <svg viewBox="0 0 24 24" className={styles.googleIcon}>
+                        <path fill="#4285F4" d="M21.6 12.23c0-.79-.07-1.54-.2-2.27H12v4.3h5.39c-.23 1.25-.94 2.31-2.01 3.02v2.51h3.24c1.9-1.75 2.98-4.33 2.98-7.56z"/>
+                        <path fill="#34A853" d="M12 22c2.7 0 4.97-.89 6.62-2.41l-3.24-2.51c-.9.6-2.05.96-3.38.96-2.6 0-4.8-1.76-5.59-4.12H3.07v2.59A10 10 0 0 0 12 22z"/>
+                        <path fill="#FBBC05" d="M6.41 13.92A5.99 5.99 0 0 1 6.09 12c0-.67.12-1.31.32-1.92V7.49H3.07A10 10 0 0 0 2 12c0 1.61.39 3.14 1.07 4.51l3.34-2.59z"/>
+                        <path fill="#EA4335" d="M12 6.04c1.47 0 2.79.5 3.83 1.49l2.87-2.87C16.95 3.07 14.69 2.2 12 2.2A10 10 0 0 0 3.07 7.49l3.34 2.59C7.2 7.8 9.4 6.04 12 6.04z"/>
+                    </svg>
+                    Entrar com Google
+                </a>
+
+                <p className={styles.footerText}>
+                    Ao continuar, você concorda com nossos Termos de Serviço e Política de Privacidade.
+                </p>
+            </div>
+        </div>
+    );
+}
