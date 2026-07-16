@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>🍫 Coleta-Cacau Academy</h1>
+  <h1>🌱 Coleta-Cacau Academy</h1>
   <p>Aprenda a construir aplicativos reais em React Native enquanto constrói o seu próprio.</p>
   
   ![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)
@@ -8,6 +8,9 @@
   ![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript)
   ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql)
   ![Docker](https://img.shields.io/badge/Docker-3.8-2496ED?logo=docker)
+  ![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-warning)
+
+  > 🚧 **Aviso:** Este projeto está atualmente em desenvolvimento ativo. Funcionalidades core (como autenticação, progressão de aulas e emissão de certificados) já estão implementadas, mas a UI e algumas integrações e funcionalidades podem passar por refatorações.
 </div>
 
 ---
