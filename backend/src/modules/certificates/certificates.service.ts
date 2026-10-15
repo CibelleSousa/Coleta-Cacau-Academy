@@ -8,6 +8,8 @@ import { Quiz } from '../../database/entities/quiz.entity';
 import { QuizAttempt } from '../../database/entities/quiz-attempt.entity';
 import { Certification } from '../../database/entities/certification.entity';
 import { User } from '../../database/entities/user.entity';
+import * as fs from 'fs';
+import * as path from  'path';
 import PDFDocument from 'pdfkit';
 
 @Injectable()
@@ -54,6 +56,7 @@ export class CertificatesService {
         if (uniquePassedQuizzes.size < totalQuizzes) {
             return { eligible: false, message: 'You have not passed all quizzes yet.' };
         }
+        
 
         // 3. Check if certificate record exists in DB
         let certificate = await this.certificationRepository.findOne({
@@ -90,7 +93,7 @@ export class CertificatesService {
                 const doc = new PDFDocument({
                     size: 'A4',
                     layout: 'landscape',
-                    margin: 50,
+                    margin: 0,
                 });
 
                 const buffers: Buffer[] = [];
@@ -102,42 +105,30 @@ export class CertificatesService {
 
                 const pageWidth = doc.page.width;
                 const pageHeight = doc.page.height;
-                const primaryColor = '#2F9B78'; // Coleta-Cacau Green
 
-                // 1. Professional Double Border
-                doc.rect(20, 20, pageWidth - 40, pageHeight - 40).lineWidth(3).strokeColor(primaryColor).stroke();
-                doc.rect(30, 30, pageWidth - 60, pageHeight - 60).lineWidth(1).strokeColor(primaryColor).stroke();
+                const templatePath = path.join(process.cwd(), 'assets', 'certificate-template.jpg');
+                const robotoPath = path.join(process.cwd(), 'assets', 'Roboto-Regular.ttf');
 
-                // 2. Title
-                doc.font('Helvetica-Bold').fontSize(28).fillColor('#333333').text('CERTIFICADO DE CONCLUSÃO', 0, 100, { align: 'center' });
+                if (fs.existsSync(templatePath)){
+                    doc.image(templatePath, 0, 0, {width: pageWidth, height: pageHeight});
+                } else {
+                    console.warn('Template de certificado não encontrado em: ', templatePath);
+                    doc.rect(0, 0, pageWidth, pageHeight).fill('#2F9B78');
+                }
 
-                // 3. Subtitle
-                doc.font('Helvetica').fontSize(14).fillColor('#666666').text('A UESC confere o presente certificado a', 0, 160, { align: 'center' });
+                doc.font(robotoPath)
+                    .fontSize(30)
+                    .fillColor('#000000')
+                    .text(studentName.toUpperCase(), 0, 275, { 
+                        align: 'center', width: pageWidth 
+                    });
 
-                // 4. Student Name (Large & Bold)
-                doc.font('Helvetica-Bold').fontSize(36).fillColor(primaryColor).text(studentName, 0, 200, { align: 'center' });
-
-                // 5. Description Text
-                doc.font('Helvetica').fontSize(14).fillColor('#444444').text(
-                    'Por ter concluído com sucesso a trilha completa de Desenvolvimento Mobile com React Native, englobando módulos teóricos e práticos, com carga horária total de 40 horas.',
-                    100,
-                    270,
-                    { align: 'center', width: pageWidth - 200 }
-                );
-
-                // 6. Completion Date
-                doc.font('Helvetica').fontSize(12).fillColor('#666666').text(`Concluído em: ${completionDate}`, 0, 340, { align: 'center' });
-
-                // 7. Signature Blocks
-                const sigY = pageHeight - 120;
-                
-                // Left Signature
-                doc.moveTo(120, sigY).lineTo(320, sigY).lineWidth(1).strokeColor('#333333').stroke();
-                doc.font('Helvetica-Bold').fontSize(12).fillColor('#333333').text('Coordenadora Docente do Projeto', 140, sigY + 10, { width: 160, align: 'center' });
-
-                // Right Signature
-                doc.moveTo(pageWidth - 320, sigY).lineTo(pageWidth - 120, sigY).lineWidth(1).strokeColor('#333333').stroke();
-                doc.font('Helvetica-Bold').fontSize(12).fillColor('#333333').text('Discente Responsável', pageWidth - 310, sigY + 10, { width: 160, align: 'center' });
+                doc.font(robotoPath)
+                    .fontSize(15)
+                    .fillColor('#000000')
+                    .text(completionDate, 0, 495, { 
+                        align: 'center', width: pageWidth 
+                    });
 
                 doc.end();
             } catch (error) {
