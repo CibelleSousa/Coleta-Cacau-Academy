@@ -1,5 +1,7 @@
+import Image from 'next/image';
 import { Sprout, CheckCircle2 } from 'lucide-react';
 import styles from './AboutProjectSection.module.css';
+import appImage from '../../assets/colecaCacauPrint.png'
 
 export default function AboutProjectSection() {
     const features = [
@@ -30,23 +32,12 @@ export default function AboutProjectSection() {
                     </ul>
                 </div>
                 <div className={styles.mockupWrapper}>
-                    <div className={styles.mockupCard}>
-                        <div className={styles.phoneFrame}>
-                            <div className={styles.phoneScreen}>
-                                <div className={styles.phoneHeader}>
-                                    <Sprout size={16} className={styles.phoneIcon} /> Coleta-Cacau
-                                </div>
-                                <div className={styles.phoneList}>
-                                    <div className={styles.phoneItemActive}>Talhão A · 32 sacas</div>
-                                    <div className={styles.phoneItem}>Talhão B · 18 sacas</div>
-                                    <div className={styles.phoneItem}>Talhão C · 24 sacas</div>
-                                </div>
-                                <div className={styles.phoneButton}>
-                                    + Registrar coleta
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <Image 
+                        src={appImage}
+                        alt='Print da tela do aplicativo Coleta-Cacau'
+                        className={styles.appScreenshot}
+                        quality={100}
+                    />
                 </div>
             </div>
         </section>

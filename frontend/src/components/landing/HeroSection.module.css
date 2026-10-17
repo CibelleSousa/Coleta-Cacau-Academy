@@ -1,22 +1,46 @@
 .heroSection {
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
 }
 
-.heroBg {
+.imageWrapper {
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: radial-gradient(ellipse at top, rgba(47, 155, 120, 0.18), transparent 60%);
+}
+
+.bgImage {
+    object-fit: cover;
+    object-position: center;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    /*background: linear-gradient(to right, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 45%, rgba(0, 0, 0, 0.1) 100%);*/
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .heroContainer {
-    max-width: 1152px;
+    width: 100%;
+    max-width: 1825px;
     margin: 0 auto;
-    padding: 3rem 1.5rem;
-    text-align: center;
+    padding: 4rem 1rem;
+    text-align: left;
     position: relative;
     z-index: 1;
+}
+
+.contentWrapper {
+    max-width: 700px;
+    background: rgba(15, 23, 42, 0.15);
+    backdrop-filter: blur(16px);
+    border: 1px, solid, rgba(255, 255, 255, 0.15);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .heroTitle {
@@ -24,7 +48,7 @@
     font-weight: 800;
     letter-spacing: -0.02em;
     line-height: 1.05;
-    color: var(--foreground);
+    color: var(--white) !important;
 }
 
 .textPrimary {
@@ -32,24 +56,26 @@
 }
 
 .heroSubtitle {
-    max-width: 42rem;
-    margin: 1.5rem auto 0;
+    margin: 1.5rem 0 0;
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--muted-foreground);
+    color: var(--white2) !important;
+    line-height: 1.6;
 }
 
 .strongText {
-    color: var(--foreground);
+    color: var(--primary) !important;
     font-weight: 700;
 }
 
 .ctaContainer {
-    margin-top: 3rem;
-    display: flex;
-    flex-direction: column;
+    margin-top: 2.5rem;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
 }
 
 .ctaButton {
@@ -64,7 +90,7 @@
     font-weight: 600;
     text-decoration: none;
     box-shadow: 0 10px 15px -3px rgba(47, 155, 120, 0.2);
-    transition: transform 0.2s;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
 .ctaButton:hover {
@@ -73,7 +99,7 @@
 
 .ctaNote {
     font-size: 0.85rem;
-    color: var(--muted-foreground);
+    color: var(--white2);
 }
 
 .statsContainer {
@@ -90,12 +116,12 @@
 .statNumber {
     font-size: 1.875rem;
     font-weight: 800;
-    color: var(--foreground);
+    color: var(--white);
 }
 
 .statLabel {
     font-size: 0.75rem;
-    color: var(--muted-foreground);
+    color: var(--white2);
     margin-top: 0.25rem;
 }
 

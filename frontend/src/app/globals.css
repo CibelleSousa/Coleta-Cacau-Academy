@@ -13,6 +13,8 @@
   --btn-background: #ffffff;
   --highlight: #f7f7f733;
   --text-fixed: #1a1a1a;
+  --white: #d1d1d1;
+  --white2: #e4e4e4;
   
   /* Opacity Variables for Dark Theme */
   --primary-10-opacity: rgba(47, 155, 120, 0.10);
@@ -34,11 +36,13 @@
   --border: #dee2e6;
   --muted: #e9ecef;
   --muted-foreground: #141618;
-  --primary: #2A5B3D;
+  --primary: #2F9B78;
   --primary-foreground: #ffffff;
   --btn-background: #141618;
   --highlight: #00000033;
   --text-fixed: #1a1a1a;
+  --white: #d1d1d1;
+  --white2: #e4e4e4;
 
   /* Opacity Variables for Light Theme (Adjusted for #2A5B3D) */
   --primary-10-opacity: rgba(42, 91, 61, 0.10);
