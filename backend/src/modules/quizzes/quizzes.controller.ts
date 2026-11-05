@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Post, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { QuizzesService } from './quizzes.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { SubmitQuizDto } from './dto/submit-quiz.dto';
@@ -9,7 +10,7 @@ import { User } from '../../database/entities/user.entity';
 @ApiTags('Quizzes')
 @ApiBearerAuth()
 @Controller('quizzes')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class QuizzesController {
     constructor(private readonly quizzesService: QuizzesService){}
 

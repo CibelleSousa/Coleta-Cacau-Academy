@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Post, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { CoursesService } from './courses.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { AddCommentDto } from './dto/add-comment.dto';
@@ -9,7 +10,7 @@ import { User } from '../../database/entities/user.entity';
 @ApiTags('Cursos')
 @ApiBearerAuth()
 @Controller('courses')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CoursesController {
     constructor(private readonly coursesService: CoursesService) {}
 

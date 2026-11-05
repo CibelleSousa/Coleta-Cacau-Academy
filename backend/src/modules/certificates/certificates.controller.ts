@@ -2,6 +2,7 @@ import { Controller, Get, UseGuards, Res } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiProduces } from '@nestjs/swagger';
 import type { Response } from 'express';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { CertificatesService } from './certificates.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { User } from '../../database/entities/user.entity';
@@ -9,7 +10,7 @@ import { User } from '../../database/entities/user.entity';
 @ApiTags('Certificados')
 @ApiBearerAuth()
 @Controller('certificates')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CertificatesController {
     constructor(private readonly certificatesService: CertificatesService) {}
 

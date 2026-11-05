@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
 import { ProgressService } from './progress.service';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { MarkProgressDto } from './dto/mark-progress.dto';
@@ -10,7 +11,7 @@ import { User } from '../../database/entities/user.entity';
 @ApiTags('Progresso')
 @ApiBearerAuth()
 @Controller('progress')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class ProgressController {
     constructor(private readonly progressService: ProgressService) {}
 
