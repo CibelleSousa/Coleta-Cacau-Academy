@@ -34,21 +34,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     const [triggerLogout] = useLogoutMutation();
 
 
-    // State Synchronization Review: Only dispatch if data exists and is different from current state
-    // This prevents unnecessary re-renders and keeps the authSlice lightweight.
+    // Sincroniza o cache do RTK Query com o authSlice.
+    //
+    // A condição anterior comparava apenas o id. Como editar o perfil não muda
+    // o id, o dispatch nunca acontecia e a sidebar continuava exibindo o nome
+    // antigo até um reload. Agora comparamos os campos que a UI realmente lê.
     useEffect(() => {
-        if (userData && userData.id !== user.id) {
-            dispatch(setUser({ 
-                id: userData.id, 
-                name: userData.name, 
-                email: userData.email, 
-                avatarUrl: userData.avatarUrl ?? null, 
+        if (!userData) return;
+
+        const mudou =
+            userData.id !== user.id ||
+            userData.name !== user.name ||
+            userData.email !== user.email ||
+            (userData.avatarUrl ?? null) !== user.avatarUrl ||
+            userData.role !== user.role ||
+            (userData.streakCount ?? 0) !== user.streakCount;
+
+        if (mudou) {
+            dispatch(setUser({
+                id: userData.id,
+                name: userData.name,
+                email: userData.email,
+                avatarUrl: userData.avatarUrl ?? null,
                 role: userData.role,
                 streakCount: userData.streakCount ?? 0,
-                createdAt: userData.createdAt ?? null 
+                createdAt: userData.createdAt ?? null
             }));
         }
-    }, [dispatch, userData, user.id]);
+    }, [dispatch, userData, user.id, user.name, user.email, user.avatarUrl, user.role, user.streakCount]);
 
     // Redirect to login if /auth/me fails (unauthorized)
     useEffect(() => {

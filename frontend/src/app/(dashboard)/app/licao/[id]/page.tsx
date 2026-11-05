@@ -12,6 +12,7 @@ import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import PageLoader from '@/components/ui/PageLoader';
+import { NotFound } from '@/components/ui/PageError';
 import styles from './page.module.css';
 
 export default function LicaoPage({ params }: { params: Promise<{ id: string }> }) {
@@ -19,7 +20,7 @@ export default function LicaoPage({ params }: { params: Promise<{ id: string }> 
     const router = useRouter();
 
     const { data: modules = [] } = useGetModulesQuery();
-    const { data: lessonData, isLoading } = useGetLessonQuery(id);
+    const { data: lessonData, isLoading, isError } = useGetLessonQuery(id);
     const [completeLesson, { isLoading: isCompleting }] = useCompleteLessonMutation();
 
     // Get flat list of theory lessons for Prev/Next navigation
@@ -61,10 +62,18 @@ export default function LicaoPage({ params }: { params: Promise<{ id: string }> 
         }
     }
 
-    if (isLoading || !lessonData) {
+    if (isLoading) {
         return (
             <div className={styles.pageContainer}>
                 <PageLoader message="Carregando lição..." />
+            </div>
+        );
+    }
+
+    if (isError || !lessonData) {
+        return (
+            <div className={styles.pageContainer}>
+                <NotFound message="Lição não encontrada. Ela pode ter sido removida ou o link está incorreto." />
             </div>
         );
     }

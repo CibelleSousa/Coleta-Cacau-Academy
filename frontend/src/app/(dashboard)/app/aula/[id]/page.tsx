@@ -18,6 +18,7 @@ import { CourseModule } from '@/store/slices/coursesSlice';
 import toast from 'react-hot-toast';
 import Avatar from '@/components/ui/Avatar';
 import PageLoader from '@/components/ui/PageLoader';
+import { NotFound } from '@/components/ui/PageError';
 import Skeleton from '@/components/ui/Skeleton';
 import styles from './page.module.css';
 
@@ -25,8 +26,8 @@ export default function AulaPage({ params }: { params: Promise<{ id: string }> }
     const { id } = use(params);
     const router = useRouter();
 
-    const { data: modules = [] } = useGetModulesQuery();
-    const { data: lessonData, isLoading } = useGetLessonQuery(id);
+    const { data: modules = [], isLoading: isLoadingModules } = useGetModulesQuery();
+    const { data: lessonData, isLoading, isError } = useGetLessonQuery(id);
     const { data: comments = [], isLoading: isLoadingComments } = useGetLessonCommentsQuery(id);
 
     const [toggleLessonProgress, { isLoading: isToggling }] = useToggleLessonProgressMutation();
@@ -92,10 +93,22 @@ export default function AulaPage({ params }: { params: Promise<{ id: string }> }
         }
     }
 
-    if (isLoading || !lessonData || !currentModule || !currentLesson) {
+    // Enquanto qualquer uma das duas consultas estiver em voo, é carregamento.
+    if (isLoading || isLoadingModules) {
         return (
             <div className={styles.pageContainer}>
                 <PageLoader message="Carregando vídeo..." />
+            </div>
+        );
+    }
+
+    // Terminou de carregar e a aula não existe (id inválido, link antigo,
+    // aula removida). Antes, a condição única acima misturava "carregando"
+    // com "não encontrado" e a página ficava no loader para sempre.
+    if (isError || !lessonData || !currentModule || !currentLesson) {
+        return (
+            <div className={styles.pageContainer}>
+                <NotFound message="Aula não encontrada. Ela pode ter sido removida ou o link está incorreto." />
             </div>
         );
     }
