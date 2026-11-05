@@ -1,17 +1,16 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight, BookOpen, PlayCircle, Award, Flame } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
-import { useGetModulesQuery } from '@/services/api';
-import { CourseModule } from '@/store/slices/coursesSlice';
+import { useGetModulesQuery, useGetCertificateEligibilityQuery } from '@/services/api';
 import Skeleton from '@/components/ui/Skeleton';
 import styles from './page.module.css';
 
 export default function DashboardHome() {
     const user = useAppSelector((state) => state.auth);
     const { data: modules = [], isLoading, isError } = useGetModulesQuery();
+    const { data: eligibility } = useGetCertificateEligibilityQuery();
     const firstName = user.name ? user.name.split(' ')[0] : 'Aluno';
 
     // --- Dynamic Data Calculation ---
@@ -101,7 +100,7 @@ export default function DashboardHome() {
                     <p className={styles.labelSmall}>Continue de onde parou</p>
                     <h2 className={styles.titleLarge}>{nextLessonItem.title}</h2>
                     <p className={styles.subtitleSmall}>{nextLessonModule.title}</p>
-                    <Link href={`/app/${nextLessonItem.type === 'video' ? 'aula' : 'licao'}/${nextLessonItem.id}`} className={styles.continueBtn}>
+                    <Link href={`/app/${nextLessonItem.type === 'VIDEO' ? 'aula' : 'licao'}/${nextLessonItem.id}`} className={styles.continueBtn}>
                         Continuar aula <ArrowRight size={16} />
                     </Link>
                 </div>
@@ -144,11 +143,16 @@ export default function DashboardHome() {
                     <Award size={24} />
                 </div>
                 <div className={styles.certTextContainer}>
+                    {/* Quem decide é o backend (GET /certificates/eligibility).
+                        Contar só as aulas aqui fazia a tela anunciar um
+                        certificado que a API recusava com 403. */}
                     <h3 className={styles.cardTitle}>
-                        {(theoryPct === 100 && videoPct === 100) ? 'Certificado Liberado! 🎓' : 'Certificado em construção'}
+                        {eligibility?.eligible ? 'Certificado Liberado! 🎓' : 'Certificado em construção'}
                     </h3>
                     <p className={styles.subtitleSmall}>
-                        {(theoryPct === 100 && videoPct === 100) ? 'Parabéns! Você já pode emitir seu certificado.' : 'Conclua todos os módulos para emitir.'}
+                        {eligibility?.eligible
+                            ? 'Parabéns! Você já pode emitir seu certificado.'
+                            : 'Conclua todas as aulas e seja aprovado em todos os quizzes para emitir.'}
                     </p>
                 </div>
                 <Link href="/app/certificados" className={styles.certLink}>

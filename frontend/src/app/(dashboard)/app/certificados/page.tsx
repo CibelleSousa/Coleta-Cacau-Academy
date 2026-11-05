@@ -1,24 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { useGetModulesQuery,useGetMeQuery } from '@/services/api';
+import { useGetMeQuery, useGetCertificateEligibilityQuery } from '@/services/api';
 import { Award, Lock, Download } from 'lucide-react';
-import { useAppSelector } from '@/store/hooks';
+import toast from 'react-hot-toast';
 import Skeleton from '@/components/ui/Skeleton';
 import styles from './page.module.css';
 
 export default function CertificadosPage() {
     const { data: user, isLoading: isUserLoading } = useGetMeQuery();
-    const { data: modules = [], isLoading } = useGetModulesQuery();
+    // A elegibilidade vem pronta do backend. Recalcular aqui já causou a tela
+    // prometer um certificado que a API recusava com 403.
+    const { data: eligibility, isLoading } = useGetCertificateEligibilityQuery();
     const [isDownloading, setIsDownloading] = useState(false);
 
-    // Calculate overall completion across ALL lessons
-    const allLessons = modules.flatMap(m => m.lessons);
-    const totalLessons = allLessons.length;
-    const doneLessons = allLessons.filter(l => l.done).length;
-    
+    const doneLessons = eligibility?.lessonsDone ?? 0;
+    const totalLessons = eligibility?.lessonsTotal ?? 0;
     const overallProgress = totalLessons > 0 ? Math.round((doneLessons / totalLessons) * 100) : 0;
-    const unlocked = overallProgress === 100 && totalLessons > 0;
+    const unlocked = eligibility?.eligible ?? false;
+
+    const faltamQuizzes = (eligibility?.quizzesTotal ?? 0) - (eligibility?.quizzesPassed ?? 0);
 
     const handleDownloadCertificate = async () => {
         setIsDownloading(true);
@@ -28,7 +29,7 @@ export default function CertificadosPage() {
                 method: 'GET',
                 credentials: 'include',
             });
-            
+
             if (response.ok) {
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
@@ -40,10 +41,13 @@ export default function CertificadosPage() {
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
             } else {
-                console.error('Failed to download certificate');
+                // Mostra ao aluno o motivo real, em vez de falhar em silêncio
+                // no console.
+                const erro = await response.json().catch(() => null);
+                toast.error(erro?.message ?? 'Não foi possível emitir o certificado.');
             }
-            } catch (error) {
-                console.error('Error downloading certificate:', error);
+            } catch {
+                toast.error('Erro de conexão ao emitir o certificado.');
             } finally {
                 setIsDownloading(false);
             }
@@ -105,12 +109,15 @@ export default function CertificadosPage() {
                                 style={{ width: `${overallProgress}%` }} 
                             />
                         </div>
-                        <p className={styles.progressText}>Progresso geral · {overallProgress}%</p>
+                        <p className={styles.progressText}>
+                            {doneLessons} de {totalLessons} aulas · {overallProgress}%
+                            {faltamQuizzes > 0 && ` · ${faltamQuizzes} quiz(zes) pendente(s)`}
+                        </p>
                     </div>
 
                     {unlocked ? (
-                        <button 
-                            onClick={handleDownloadCertificate} 
+                        <button
+                            onClick={handleDownloadCertificate}
                             disabled={isDownloading}
                             className={styles.downloadBtn}
                         >
@@ -120,7 +127,12 @@ export default function CertificadosPage() {
                     ) : (
                         <button disabled className={styles.lockedBtn}>
                             <Lock size={16} />
-                            Bloqueado — conclua o curso
+                            {/* Diz exatamente o que falta, em vez de só "conclua o curso" */}
+                            {totalLessons > doneLessons
+                                ? `Faltam ${totalLessons - doneLessons} aula(s)`
+                                : faltamQuizzes > 0
+                                  ? `Faltam ${faltamQuizzes} quiz(zes)`
+                                  : 'Bloqueado — conclua o curso'}
                         </button>
                     )}
                 </div>

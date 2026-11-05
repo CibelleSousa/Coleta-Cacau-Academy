@@ -13,6 +13,17 @@ import { User } from '../../database/entities/user.entity';
 export class CertificatesController {
     constructor(private readonly certificatesService: CertificatesService) {}
 
+    @Get('eligibility')
+    @ApiOperation({ summary: 'Consultar elegibilidade para o certificado' })
+    @ApiResponse({
+        status: 200,
+        description:
+            'Situação do aluno: se já pode emitir e quanto falta de aulas e quizzes.',
+    })
+    async getEligibility(@CurrentUser() user: User) {
+        return this.certificatesService.getEligibility(user);
+    }
+
    @Get('issue')
     @ApiOperation({ summary: 'Emitir certificado em PDF (se elegível)' })
     @ApiProduces('application/pdf')

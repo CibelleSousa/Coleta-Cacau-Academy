@@ -48,30 +48,64 @@ export class CertificatesService {
     }
   }
 
+  /**
+   * Fonte única da regra de elegibilidade.
+   *
+   * Antes, o frontend recalculava isto por conta própria contando apenas as
+   * aulas — e liberava o botão de download enquanto a API exigia também todos
+   * os quizzes aprovados, respondendo 403. Agora quem decide é só o backend,
+   * e o frontend apenas exibe o que falta.
+   *
+   * Não gera PDF: é consulta barata, pensada para a tela de certificados.
+   */
+  async getEligibility(user: User) {
+        const [totalLessons, completedLessons, totalQuizzes, passingAttempts] =
+            await Promise.all([
+                this.lessonRepository.count(),
+                this.progressRepository.count({
+                    where: { userId: user.id, completed: true },
+                }),
+                this.quizRepository.count(),
+                this.attemptRepository.find({
+                    where: { userId: user.id, passed: true },
+                    select: ['quizId'],
+                }),
+            ]);
+
+        // Um mesmo quiz pode ter várias tentativas aprovadas; contamos quizzes
+        // distintos, não tentativas.
+        const quizzesPassed = new Set(passingAttempts.map((a) => a.quizId)).size;
+
+        const lessonsComplete = totalLessons > 0 && completedLessons >= totalLessons;
+        const quizzesComplete = quizzesPassed >= totalQuizzes;
+
+        return {
+            eligible: lessonsComplete && quizzesComplete,
+            lessonsDone: completedLessons,
+            lessonsTotal: totalLessons,
+            quizzesPassed,
+            quizzesTotal: totalQuizzes,
+        };
+    }
+
   async checkAndIssueCertificate(user: User) {
-        // 1. Check if all lessons are completed
-        const totalLessons = await this.lessonRepository.count();
-        const completedLessons = await this.progressRepository.count({
-            where: { userId: user.id, completed: true },
-        });
+        const eligibility = await this.getEligibility(user);
 
-        if (totalLessons === 0 || completedLessons < totalLessons) {
-            return { eligible: false, message: 'You have not completed all lessons yet.' };
+        if (!eligibility.eligible) {
+            const faltamAulas = eligibility.lessonsTotal - eligibility.lessonsDone;
+            const faltamQuizzes = eligibility.quizzesTotal - eligibility.quizzesPassed;
+            const pendencias = [
+                faltamAulas > 0 ? `${faltamAulas} aula(s)` : null,
+                faltamQuizzes > 0 ? `${faltamQuizzes} quiz(zes)` : null,
+            ].filter(Boolean);
+
+            return {
+                eligible: false as const,
+                message: pendencias.length
+                    ? `Ainda faltam: ${pendencias.join(' e ')}.`
+                    : 'Curso ainda não disponível para certificação.',
+            };
         }
-
-        // 2. Check if all quizzes are passed
-        const totalQuizzes = await this.quizRepository.count();
-        const passingAttempts = await this.attemptRepository.find({
-            where: { userId: user.id, passed: true },
-            select: ['quizId'],
-        });
-        
-        const uniquePassedQuizzes = new Set(passingAttempts.map((a) => a.quizId));
-
-        if (uniquePassedQuizzes.size < totalQuizzes) {
-            return { eligible: false, message: 'You have not passed all quizzes yet.' };
-        }
-        
 
         // 3. Check if certificate record exists in DB
         let certificate = await this.certificationRepository.findOne({
@@ -92,7 +126,7 @@ export class CertificatesService {
         const pdfBuffer = await this.generateCertificatePdf(user.name, completionDate);
 
         return {
-            eligible: true,
+            eligible: true as const,
             certificate: {
                 id: certificate.id,
                 issuedAt: certificate.issuedAt,
