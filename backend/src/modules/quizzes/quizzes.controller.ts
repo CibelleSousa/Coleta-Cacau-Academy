@@ -25,7 +25,6 @@ export class QuizzesController {
     @ApiOperation({ summary: 'Submeter respostas de um quiz' })
     @ApiResponse({ status: 200, description: 'Respostas processadas e pontuação retornada.' })
     @ApiResponse({ status: 404, description: 'Quiz não encontrado.' })
-    @Post('submit')
     async submitQuiz(
         @CurrentUser() user: User,
         @Body() submitQuizDto: SubmitQuizDto,
