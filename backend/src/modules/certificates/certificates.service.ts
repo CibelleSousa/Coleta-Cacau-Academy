@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -22,15 +22,30 @@ export class CertificatesService {
     @InjectRepository(Certification) private readonly certificationRepository: Repository<Certification>,
   ) {}
 
-  // Listeners
+  private readonly logger = new Logger(CertificatesService.name);
+
   @OnEvent('lesson.completed')
   async handleLessonCompletedEvent(payload: { user: User }) {
-    await this.checkAndIssueCertificate(payload.user);
+    try {
+      await this.checkAndIssueCertificate(payload.user);
+    } catch (error) {
+      this.logger.error(
+        `Falha ao verificar/emitir certificado após conclusão de aula (user ${payload.user.id})`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    }
   }
 
   @OnEvent('quiz.passed')
   async handleQuizPassedEvent(payload: { user: User }) {
-    await this.checkAndIssueCertificate(payload.user);
+    try {
+      await this.checkAndIssueCertificate(payload.user);
+    } catch (error) {
+      this.logger.error(
+        `Falha ao verificar/emitir certificado após aprovação em quiz (user ${payload.user.id})`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    }
   }
 
   async checkAndIssueCertificate(user: User) {
@@ -87,6 +102,11 @@ export class CertificatesService {
         };
     }
 
+    private assetPath(assetName: string): string | null {
+        const pathString = path.join(__dirname, '../../assets', assetName);
+        return fs.existsSync(pathString) ? pathString : null;
+    }
+
     private generateCertificatePdf(studentName: string, completionDate: string): Promise<Buffer> {
         return new Promise((resolve, reject) => {
             try {
@@ -106,24 +126,27 @@ export class CertificatesService {
                 const pageWidth = doc.page.width;
                 const pageHeight = doc.page.height;
 
-                const templatePath = path.join(process.cwd(), 'assets', 'certificate-template.jpg');
-                const robotoPath = path.join(process.cwd(), 'assets', 'Roboto-Regular.ttf');
+                const templatePath = this.assetPath('certificate-template.jpg');
+                const robotoRegularPath = this.assetPath('Roboto-Regular.ttf');
+                const robotoBoldPath = this.assetPath('Roboto-Bold.ttf');
 
-                if (fs.existsSync(templatePath)){
-                    doc.image(templatePath, 0, 0, {width: pageWidth, height: pageHeight});
+                if (templatePath) {
+                    doc.image(templatePath, 0, 0, {width: pageWidth, height: pageHeight})
                 } else {
-                    console.warn('Template de certificado não encontrado em: ', templatePath);
-                    doc.rect(0, 0, pageWidth, pageHeight).fill('#2F9B78');
+                    this.logger.warn(
+                        `Template não encontrado em ${path.join(__dirname, '../../assets')} — gerando certificado com fundo liso`,
+                    );
+                    doc.rect(0,0, pageWidth, pageHeight).fill('#2F9B78');
                 }
 
-                doc.font(robotoPath)
+                doc.font(robotoBoldPath ?? 'Helvetica-Bold')
                     .fontSize(30)
                     .fillColor('#000000')
                     .text(studentName.toUpperCase(), 0, 275, { 
                         align: 'center', width: pageWidth 
                     });
 
-                doc.font(robotoPath)
+                doc.font(robotoRegularPath ?? 'Helvetica')
                     .fontSize(15)
                     .fillColor('#000000')
                     .text(completionDate, 0, 495, { 
