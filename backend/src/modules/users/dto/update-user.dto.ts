@@ -1,4 +1,4 @@
-import { IsString, IsOptional, MinLength } from 'class-validator';
+import { IsString, IsOptional, IsUrl, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
@@ -13,12 +13,15 @@ export class UpdateUserDto {
     @IsOptional()
     name?: string;
 
-    @ApiProperty({ 
-        required: false, 
-        description: 'URL da imagem do avatar',
-        example: 'https://example.com/avatar.png'
+    @ApiProperty({
+        required: false,
+        description: 'URL da imagem do avatar (http ou https)',
+        example: 'https://lh3.googleusercontent.com/a/exemplo'
     })
-    @IsString()
+    // @IsString() aceitava qualquer texto, que ia direto para o src de um
+    // <img>. Exigir protocolo explícito descarta entradas como "javascript:"
+    // ou caminhos relativos.
+    @IsUrl({ protocols: ['http', 'https'], require_protocol: true })
     @IsOptional()
     avatarUrl?: string;
 }
