@@ -22,7 +22,9 @@ const AppDataSource = new DataSource({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     entities: [CourseModule, Lesson, Quiz, Question, Option, UserProgress, User, QuizAttempt, Certification, LessonComment, CommentLike],
-    synchronize: true,
+    // O seed popula dados; criar schema é responsabilidade das migrations.
+    // Rode `npm run migration:run` antes deste script.
+    synchronize: false,
 });
 
 async function seed() {
@@ -95,9 +97,14 @@ async function seed() {
         console.log('Curriculum seeded successfully!');
     } catch (error) {
         console.error('Error during seeding:', error);
+        // Sem isto o processo sai com código 0 e um seed quebrado "passa" em CI.
+        process.exitCode = 1;
     } finally {
         await AppDataSource.destroy();
     }
 }
 
-seed();
+seed().catch((error) => {
+    console.error('Unexpected seeding failure:', error);
+    process.exit(1);
+});
