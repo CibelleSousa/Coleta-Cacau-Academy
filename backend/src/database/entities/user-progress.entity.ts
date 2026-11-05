@@ -25,11 +25,13 @@ export class UserProgress {
     @Column({ default: false })
     completed!: boolean;
 
+    // A coluna é nullable no banco; o tipo precisa refletir isso para que
+    // desmarcar uma aula possa limpar a data sem recorrer a `as any`.
     @Column({ type: 'timestamptz', nullable: true })
-    completedAt!: Date;
+    completedAt!: Date | null;
 
     @Column({ type: 'int', nullable: true })
-    rating!: number;
+    rating!: number | null;
 
     @CreateDateColumn()
     createdAt!: Date;

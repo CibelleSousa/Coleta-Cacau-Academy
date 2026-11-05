@@ -56,22 +56,39 @@ export class ProgressService {
             where: { userId: user.id, lessonId },
         });
 
-        if (progress) {
-            // Uncheck: Remove the progress record completely
-            await this.progressRepository.remove(progress);
+        // O estado alternado é `completed`, não a existência da linha.
+        // Avaliar uma aula também cria o registro em user_progress, então
+        // decidir por "a linha existe" fazia o toggle desmarcar uma aula que
+        // nunca tinha sido concluída.
+        if (progress?.completed) {
+            progress.completed = false;
+            progress.completedAt = null;
+
+            // Desmarcar não pode apagar a linha quando há avaliação: `rating`
+            // mora na mesma tabela e seria destruído junto. Sem avaliação, não
+            // resta nada de útil e removemos para não acumular linhas vazias.
+            if (progress.rating == null) {
+                await this.progressRepository.remove(progress);
+            } else {
+                await this.progressRepository.save(progress);
+            }
+
             return { lessonId, done: false };
-        } else {
-            // Mark as done: Create a new progress record
-            const newProgress = this.progressRepository.create({
-                userId: user.id,
-                lessonId,
-                completed: true,
-                completedAt: new Date(),
-            });
-            await this.progressRepository.save(newProgress);
-            this.eventEmitter.emit('lesson.completed', { user });
-            return { lessonId, done: true };
         }
+
+        // Marcar como concluída: reaproveita a linha existente (preservando a
+        // avaliação) ou cria uma nova.
+        const atualizado = progress ?? this.progressRepository.create({
+            userId: user.id,
+            lessonId,
+        });
+        atualizado.completed = true;
+        atualizado.completedAt = new Date();
+
+        await this.progressRepository.save(atualizado);
+        this.eventEmitter.emit('lesson.completed', { user });
+
+        return { lessonId, done: true };
     }
 
     async rateLesson(user: User, lessonId: string, rating: number){
