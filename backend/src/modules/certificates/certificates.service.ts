@@ -151,11 +151,15 @@ export class CertificatesService {
                 });
 
                 const buffers: Buffer[] = [];
-                doc.on('data', buffers.push.bind(buffers));
+                doc.on('data', (chunk: Buffer) => buffers.push(chunk));
                 doc.on('end', () => {
                     const pdfData = Buffer.concat(buffers);
                     resolve(pdfData);
                 });
+                // O pdfkit é um stream: além do throw síncrono, ele pode
+                // emitir 'error' de forma assíncrona. Sem este listener, a
+                // promise ficaria pendente para sempre.
+                doc.on('error', (err: Error) => reject(err));
 
                 const pageWidth = doc.page.width;
                 const pageHeight = doc.page.height;
@@ -189,7 +193,10 @@ export class CertificatesService {
 
                 doc.end();
             } catch (error) {
-                reject(error);
+                // `throw` em JavaScript aceita qualquer valor, não só Error.
+                // Normalizamos para que quem trata a rejeição sempre receba
+                // um Error com stack utilizável.
+                reject(error instanceof Error ? error : new Error(String(error)));
             }
         });
     }
