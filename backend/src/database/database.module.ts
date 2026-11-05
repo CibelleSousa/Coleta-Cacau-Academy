@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as path from 'path';
 
 
 import { User } from './entities/user.entity';
@@ -40,7 +41,18 @@ import { CommentLike } from './entities/comment-like.entity';
           LessonComment,
           CommentLike
         ],
-        synchronize: configService.get<string>('nodeEnv') === 'development', // Disable in production!
+        // O schema é controlado por migrations (src/database/migrations).
+        // synchronize infere o schema das entidades e pode apagar dados sem aviso —
+        // nunca é usado, nem em desenvolvimento, para que dev e produção sigam
+        // exatamente o mesmo caminho.
+        synchronize: false,
+        // __dirname aponta para dist/database em tempo de execução.
+        migrations: [path.join(__dirname, 'migrations', '*.js')],
+        // Aplica migrations pendentes no boot. Simplifica o deploy (um passo a
+        // menos), mas assume uma única instância subindo por vez. Com várias
+        // réplicas, troque por um passo explícito de `npm run migration:run`
+        // antes de subir a aplicação.
+        migrationsRun: true,
         logging: false,
       }),
     }),

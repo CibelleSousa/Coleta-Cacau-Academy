@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -8,6 +8,8 @@ import { Quiz } from '../../database/entities/quiz.entity';
 import { QuizAttempt } from '../../database/entities/quiz-attempt.entity';
 import { Certification } from '../../database/entities/certification.entity';
 import { User } from '../../database/entities/user.entity';
+import * as fs from 'fs';
+import * as path from  'path';
 import PDFDocument from 'pdfkit';
 
 @Injectable()
@@ -20,39 +22,89 @@ export class CertificatesService {
     @InjectRepository(Certification) private readonly certificationRepository: Repository<Certification>,
   ) {}
 
-  // Listeners
+  private readonly logger = new Logger(CertificatesService.name);
+
   @OnEvent('lesson.completed')
   async handleLessonCompletedEvent(payload: { user: User }) {
-    await this.checkAndIssueCertificate(payload.user);
+    try {
+      await this.checkAndIssueCertificate(payload.user);
+    } catch (error) {
+      this.logger.error(
+        `Falha ao verificar/emitir certificado após conclusão de aula (user ${payload.user.id})`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    }
   }
 
   @OnEvent('quiz.passed')
   async handleQuizPassedEvent(payload: { user: User }) {
-    await this.checkAndIssueCertificate(payload.user);
+    try {
+      await this.checkAndIssueCertificate(payload.user);
+    } catch (error) {
+      this.logger.error(
+        `Falha ao verificar/emitir certificado após aprovação em quiz (user ${payload.user.id})`,
+        error instanceof Error ? error.stack : String(error),
+      );
+    }
   }
 
+  /**
+   * Fonte única da regra de elegibilidade.
+   *
+   * Antes, o frontend recalculava isto por conta própria contando apenas as
+   * aulas — e liberava o botão de download enquanto a API exigia também todos
+   * os quizzes aprovados, respondendo 403. Agora quem decide é só o backend,
+   * e o frontend apenas exibe o que falta.
+   *
+   * Não gera PDF: é consulta barata, pensada para a tela de certificados.
+   */
+  async getEligibility(user: User) {
+        const [totalLessons, completedLessons, totalQuizzes, passingAttempts] =
+            await Promise.all([
+                this.lessonRepository.count(),
+                this.progressRepository.count({
+                    where: { userId: user.id, completed: true },
+                }),
+                this.quizRepository.count(),
+                this.attemptRepository.find({
+                    where: { userId: user.id, passed: true },
+                    select: ['quizId'],
+                }),
+            ]);
+
+        // Um mesmo quiz pode ter várias tentativas aprovadas; contamos quizzes
+        // distintos, não tentativas.
+        const quizzesPassed = new Set(passingAttempts.map((a) => a.quizId)).size;
+
+        const lessonsComplete = totalLessons > 0 && completedLessons >= totalLessons;
+        const quizzesComplete = quizzesPassed >= totalQuizzes;
+
+        return {
+            eligible: lessonsComplete && quizzesComplete,
+            lessonsDone: completedLessons,
+            lessonsTotal: totalLessons,
+            quizzesPassed,
+            quizzesTotal: totalQuizzes,
+        };
+    }
+
   async checkAndIssueCertificate(user: User) {
-        // 1. Check if all lessons are completed
-        const totalLessons = await this.lessonRepository.count();
-        const completedLessons = await this.progressRepository.count({
-            where: { userId: user.id, completed: true },
-        });
+        const eligibility = await this.getEligibility(user);
 
-        if (totalLessons === 0 || completedLessons < totalLessons) {
-            return { eligible: false, message: 'You have not completed all lessons yet.' };
-        }
+        if (!eligibility.eligible) {
+            const faltamAulas = eligibility.lessonsTotal - eligibility.lessonsDone;
+            const faltamQuizzes = eligibility.quizzesTotal - eligibility.quizzesPassed;
+            const pendencias = [
+                faltamAulas > 0 ? `${faltamAulas} aula(s)` : null,
+                faltamQuizzes > 0 ? `${faltamQuizzes} quiz(zes)` : null,
+            ].filter(Boolean);
 
-        // 2. Check if all quizzes are passed
-        const totalQuizzes = await this.quizRepository.count();
-        const passingAttempts = await this.attemptRepository.find({
-            where: { userId: user.id, passed: true },
-            select: ['quizId'],
-        });
-        
-        const uniquePassedQuizzes = new Set(passingAttempts.map((a) => a.quizId));
-
-        if (uniquePassedQuizzes.size < totalQuizzes) {
-            return { eligible: false, message: 'You have not passed all quizzes yet.' };
+            return {
+                eligible: false as const,
+                message: pendencias.length
+                    ? `Ainda faltam: ${pendencias.join(' e ')}.`
+                    : 'Curso ainda não disponível para certificação.',
+            };
         }
 
         // 3. Check if certificate record exists in DB
@@ -74,7 +126,7 @@ export class CertificatesService {
         const pdfBuffer = await this.generateCertificatePdf(user.name, completionDate);
 
         return {
-            eligible: true,
+            eligible: true as const,
             certificate: {
                 id: certificate.id,
                 issuedAt: certificate.issuedAt,
@@ -84,13 +136,18 @@ export class CertificatesService {
         };
     }
 
+    private assetPath(assetName: string): string | null {
+        const pathString = path.join(__dirname, '../../assets', assetName);
+        return fs.existsSync(pathString) ? pathString : null;
+    }
+
     private generateCertificatePdf(studentName: string, completionDate: string): Promise<Buffer> {
         return new Promise((resolve, reject) => {
             try {
                 const doc = new PDFDocument({
                     size: 'A4',
                     layout: 'landscape',
-                    margin: 50,
+                    margin: 0,
                 });
 
                 const buffers: Buffer[] = [];
@@ -102,42 +159,33 @@ export class CertificatesService {
 
                 const pageWidth = doc.page.width;
                 const pageHeight = doc.page.height;
-                const primaryColor = '#2F9B78'; // Coleta-Cacau Green
 
-                // 1. Professional Double Border
-                doc.rect(20, 20, pageWidth - 40, pageHeight - 40).lineWidth(3).strokeColor(primaryColor).stroke();
-                doc.rect(30, 30, pageWidth - 60, pageHeight - 60).lineWidth(1).strokeColor(primaryColor).stroke();
+                const templatePath = this.assetPath('certificate-template.jpg');
+                const robotoRegularPath = this.assetPath('Roboto-Regular.ttf');
+                const robotoBoldPath = this.assetPath('Roboto-Bold.ttf');
 
-                // 2. Title
-                doc.font('Helvetica-Bold').fontSize(28).fillColor('#333333').text('CERTIFICADO DE CONCLUSÃO', 0, 100, { align: 'center' });
+                if (templatePath) {
+                    doc.image(templatePath, 0, 0, {width: pageWidth, height: pageHeight})
+                } else {
+                    this.logger.warn(
+                        `Template não encontrado em ${path.join(__dirname, '../../assets')} — gerando certificado com fundo liso`,
+                    );
+                    doc.rect(0,0, pageWidth, pageHeight).fill('#2F9B78');
+                }
 
-                // 3. Subtitle
-                doc.font('Helvetica').fontSize(14).fillColor('#666666').text('A UESC confere o presente certificado a', 0, 160, { align: 'center' });
+                doc.font(robotoBoldPath ?? 'Helvetica-Bold')
+                    .fontSize(30)
+                    .fillColor('#000000')
+                    .text(studentName.toUpperCase(), 0, 275, { 
+                        align: 'center', width: pageWidth 
+                    });
 
-                // 4. Student Name (Large & Bold)
-                doc.font('Helvetica-Bold').fontSize(36).fillColor(primaryColor).text(studentName, 0, 200, { align: 'center' });
-
-                // 5. Description Text
-                doc.font('Helvetica').fontSize(14).fillColor('#444444').text(
-                    'Por ter concluído com sucesso a trilha completa de Desenvolvimento Mobile com React Native, englobando módulos teóricos e práticos, com carga horária total de 40 horas.',
-                    100,
-                    270,
-                    { align: 'center', width: pageWidth - 200 }
-                );
-
-                // 6. Completion Date
-                doc.font('Helvetica').fontSize(12).fillColor('#666666').text(`Concluído em: ${completionDate}`, 0, 340, { align: 'center' });
-
-                // 7. Signature Blocks
-                const sigY = pageHeight - 120;
-                
-                // Left Signature
-                doc.moveTo(120, sigY).lineTo(320, sigY).lineWidth(1).strokeColor('#333333').stroke();
-                doc.font('Helvetica-Bold').fontSize(12).fillColor('#333333').text('Coordenadora Docente do Projeto', 140, sigY + 10, { width: 160, align: 'center' });
-
-                // Right Signature
-                doc.moveTo(pageWidth - 320, sigY).lineTo(pageWidth - 120, sigY).lineWidth(1).strokeColor('#333333').stroke();
-                doc.font('Helvetica-Bold').fontSize(12).fillColor('#333333').text('Discente Responsável', pageWidth - 310, sigY + 10, { width: 160, align: 'center' });
+                doc.font(robotoRegularPath ?? 'Helvetica')
+                    .fontSize(15)
+                    .fillColor('#000000')
+                    .text(completionDate, 0, 495, { 
+                        align: 'center', width: pageWidth 
+                    });
 
                 doc.end();
             } catch (error) {

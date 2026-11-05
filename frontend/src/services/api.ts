@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CourseModule } from '@/store/slices/coursesSlice';
+import { CourseModule, LessonType } from '@/store/slices/coursesSlice';
 
 /**
  * Interface representando os dados básicos do Usuário retornados pela API.
@@ -80,7 +80,8 @@ export interface LessonDetail {
     description: string | null;
     videoUrl: string | null;
     duration: string;
-    type: 'read' | 'video';
+    /** Em MAIÚSCULAS, espelhando o enum do backend. Ver coursesSlice.ts. */
+    type: LessonType;
     order: number;
     done: boolean;
     rating?: number | null;
@@ -88,6 +89,20 @@ export interface LessonDetail {
         id: string;
         title: string;
     };
+}
+
+/**
+ * Situação do aluno quanto ao certificado, calculada exclusivamente pelo
+ * backend. O frontend não deve recalcular esta regra: já houve divergência
+ * entre as duas versões, com a tela liberando o download e a API negando.
+ */
+export interface CertificateEligibility {
+    /** Verdadeiro apenas se todas as aulas foram concluídas E todos os quizzes aprovados. */
+    eligible: boolean;
+    lessonsDone: number;
+    lessonsTotal: number;
+    quizzesPassed: number;
+    quizzesTotal: number;
 }
 
 /**
@@ -139,8 +154,10 @@ export const apiSlice = createApi({
             async onQueryStarted({ lessonId }, { dispatch, queryFulfilled }) {
                 const patchResult = dispatch(
                     apiSlice.util.updateQueryData('getModules', undefined, (draft) => {
-                        for (const module of draft) {
-                            const lesson = module.lessons.find(l => l.id === lessonId);
+                        // Não usar `module` como nome de variável: colide com
+                        // o `module` do CommonJS e o Next recusa o build.
+                        for (const courseModule of draft) {
+                            const lesson = courseModule.lessons.find(l => l.id === lessonId);
                             if (lesson) {
                                 lesson.done = !lesson.done;
                             }
@@ -201,6 +218,12 @@ export const apiSlice = createApi({
             query: (id) => `/courses/lessons/${id}`,
             providesTags: (result, error, id) => [{ type: 'Lesson', id }]
         }),
+        getCertificateEligibility: builder.query<CertificateEligibility, void>({
+            query: () => '/certificates/eligibility',
+            // Concluir aula ou passar em quiz muda a elegibilidade; a tag
+            // Modules já é invalidada nessas ações.
+            providesTags: ['Modules'],
+        }),
     }),
 });
 
@@ -217,5 +240,6 @@ export const {
     useToggleLikeCommentMutation,
     useGetQuizQuery,
     useSubmitQuizMutation,
-    useGetLessonQuery
+    useGetLessonQuery,
+    useGetCertificateEligibilityQuery
 } = apiSlice;

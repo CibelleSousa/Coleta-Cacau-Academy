@@ -37,9 +37,7 @@ export class AuthController {
 
         // Set the JWT in an HttpOnly cookie
         res.cookie('access_token', token, {
-            httpOnly: true,
-            secure: this.configService.get('nodeEnv') === 'production',
-            sameSite: 'lax', // 'lax' is generally safer for OAuth redirects than 'none'
+            ...this.cookieOptions(),
             maxAge: 24 * 60 * 60 * 1000, // 1 day in milliseconds
         });
 
@@ -53,11 +51,29 @@ export class AuthController {
     @ApiOperation({ summary: 'Encerrar sessão (limpar cookies)' })
     @ApiResponse({ status: 200, description: 'Logout realizado com sucesso.' })
     async logout(@Req() req: Request, @Res() res: Response) {
-        res.clearCookie('access_token', {
-            httpOnly: true,
-            secure: this.configService.get('nodeEnv') === 'production',
-        });
+        // O navegador só remove o cookie se domain, path, secure e sameSite
+        // baterem com os usados na criação. Por isso reaproveitamos as mesmas
+        // opções em vez de repetir um subconjunto.
+        res.clearCookie('access_token', this.cookieOptions());
         return res.status(200).json({ message: 'Logged out successfully' });
+    }
+
+    /**
+     * Opções do cookie de sessão, em um lugar só, para que criação e remoção
+     * nunca divirjam.
+     */
+    private cookieOptions() {
+        const isProduction = this.configService.get<string>('nodeEnv') === 'production';
+        const sameSite = this.configService.get<'lax' | 'strict' | 'none'>('cookie.sameSite')!;
+
+        return {
+            httpOnly: true,
+            // SameSite=None só é aceito pelo navegador junto de Secure.
+            secure: isProduction || sameSite === 'none',
+            sameSite,
+            domain: this.configService.get<string>('cookie.domain'),
+            path: '/',
+        };
     }
 
     @Get('me')

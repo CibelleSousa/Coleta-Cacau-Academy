@@ -65,82 +65,21 @@
 
 .mockupWrapper {
     position: relative;
-}
-
-.mockupCard {
-    aspect-ratio: 4 / 5;
-    border-radius: 1.5rem;
-    border: 1px solid var(--border);
-    background: linear-gradient(to bottom right, rgba(47, 155, 120, 0.2), var(--card));
-    padding: 2rem;
     display: flex;
-    align-items: center;
     justify-content: center;
-}
-
-.phoneFrame {
-    width: 14rem;
-    border-radius: 2.5rem;
-    border: 4px solid rgba(250, 250, 250, 0.2);
-    background-color: var(--background);
-    padding: 0.75rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-.phoneScreen {
-    border-radius: 2rem;
-    background-color: var(--card);
-    padding: 1rem;
-    height: 420px;
-    display: flex;
-    flex-direction: column;
-}
-
-.phoneHeader {
-    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--foreground);
 }
 
-.phoneIcon {
-    color: var(--primary);
+.appScreenshot {
+    width: 100%;
+    max-width: 340;
+    height: auto;
+    filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25));
+    transition: transform 0.3s ease;
 }
 
-.phoneList {
-    margin-top: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.phoneItemActive {
-    border-radius: 0.5rem;
-    background-color: rgba(47, 155, 120, 0.15);
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-    color: var(--foreground);
-}
-
-.phoneItem {
-    border-radius: 0.5rem;
-    background-color: var(--muted);
-    padding: 0.5rem 0.75rem;
-    font-size: 0.75rem;
-    color: var(--muted-foreground);
-}
-
-.phoneButton {
-    margin-top: auto;
-    border-radius: 0.5rem;
-    background-color: var(--primary);
-    padding: 0.5rem 0.75rem;
-    text-align: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--primary-foreground);
+.appScreenshot:hover {
+    transform: translateY(-10px);
 }
 
 @media (min-width: 768px) {

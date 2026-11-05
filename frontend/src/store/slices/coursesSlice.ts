@@ -1,6 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 /**
+ * Tipo de conteúdo de uma lição, espelhando o enum `LessonType` do backend
+ * (backend/src/database/entities/lesson.entity.ts).
+ *
+ * Mantenha os valores idênticos aos do backend: o RTK Query não valida a
+ * resposta em tempo de execução, então um tipo divergente aqui compila
+ * normalmente e só falha quando o usuário clica.
+ */
+export type LessonType = 'READ' | 'VIDEO';
+
+/** Tipo de um módulo: trilha teórica ou projeto prático. */
+export type ModuleType = 'THEORY' | 'PRACTICAL';
+
+/**
  * Interface representando uma Lição (Aula) dentro de um módulo do curso.
  */
 export interface Lesson {
@@ -12,8 +25,15 @@ export interface Lesson {
   slug: string;
   /** Duração estimada da lição (ex: "10 min"). */
   duration: string;
-  /** Tipo de conteúdo da lição. */
-  type: 'read' | 'video';
+  /**
+   * Tipo de conteúdo da lição.
+   *
+   * Em MAIÚSCULAS porque é exatamente o que a API devolve — o enum
+   * `LessonType` do backend (`READ` | `VIDEO`). Já esteve declarado em
+   * minúsculas aqui, o que fazia `type === 'video'` ser sempre falso e
+   * levava toda videoaula para a página de texto, em branco.
+   */
+  type: LessonType;
   /** Ordem de exibição dentro do módulo. */
   order: number;
   /** Indica se a lição foi concluída pelo usuário atual. */
@@ -28,7 +48,7 @@ export interface CourseModule {
   title: string;
   description: string;
   order: number;
-  type: 'THEORY' | 'PRACTICAL';
+  type: ModuleType;
   lessons: Lesson[];
 }
 
