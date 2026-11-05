@@ -1,5 +1,8 @@
-version: '3.8'
-
+# Compose de DESENVOLVIMENTO local.
+# O atributo `version` foi removido: é obsoleto desde o Compose v2 e gera aviso.
+#
+# Para produção, veja docs/viabilidade-deploy.md — lá as variáveis vêm do
+# ambiente do provedor, NODE_ENV=production e o banco é gerenciado.
 services:
   # ==========================================
   # PostgreSQL Database Service
@@ -34,7 +37,11 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      # development aqui habilita o Swagger em /api/docs. O schema do banco
+      # NÃO depende mais disto: desde a adoção de migrations, synchronize é
+      # sempre false. Em produção use NODE_ENV=production.
       - NODE_ENV=development
+      - PORT=3001
       # Database connection variables matching the postgres service
       - DB_HOST=postgres
       - DB_PORT=5432

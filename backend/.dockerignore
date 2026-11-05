@@ -1,0 +1,23 @@
+# Sem este arquivo, o `COPY . .` do Dockerfile copia o node_modules e o dist
+# da máquina local para dentro da imagem — lento, pesado e, no caso do
+# node_modules, potencialmente incompatível com a arquitetura do container.
+node_modules
+dist
+build
+coverage
+
+# NUNCA copiar segredos para dentro da imagem.
+# Em produção as variáveis entram por ambiente, não por arquivo.
+.env
+.env.*
+!.env.example
+
+# Ruído que não afeta o build
+.git
+.gitignore
+*.md
+.vscode
+.idea
+*.log
+npm-debug.log*
+test
