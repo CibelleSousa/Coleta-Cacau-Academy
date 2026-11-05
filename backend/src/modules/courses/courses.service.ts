@@ -25,9 +25,11 @@ export class CoursesService {
 
     async getAllModulesWithProgress(user: User) {
         // Fetch all modules along with their lessons
+        // `order: { order: 'ASC' }` sozinho ordena apenas os MÓDULOS; as aulas
+        // vinham na ordem arbitrária do banco. É preciso ordenar a relação.
         const modules = await this.moduleRepository.find({
-            relations: ['lessons'],
-            order: { order: 'ASC' },
+            relations: { lessons: true },
+            order: { order: 'ASC', lessons: { order: 'ASC' } },
         });
 
         // Fetch all progress records for this specific user
@@ -44,6 +46,10 @@ export class CoursesService {
                 slug: lesson.slug,
                 duration: lesson.duration,
                 type: lesson.type,
+                // O frontend declarava `order` como obrigatório, mas a API
+                // nunca o enviava: `a.order - b.order` virava NaN e o sort
+                // silenciosamente não fazia nada.
+                order: lesson.order,
                 done: completedLessonIds.has(lesson.id),
             }));
 
@@ -83,6 +89,7 @@ export class CoursesService {
             videoUrl: lesson.videoUrl,
             duration: lesson.duration,
             type: lesson.type,
+            order: lesson.order,
             done: progress?.completed || false,
             rating: progress?.rating || null,
             module: {
