@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { DatabaseModule } from './database/database.module';
@@ -11,6 +11,7 @@ import { ProgressModule } from './modules/progress/progress.module';
 import { QuizzesModule } from './modules/quizzes/quizzes.module';
 import { UsersModule } from './modules/users/users.module';
 import { RolesGuard } from './common/guards/roles.guard';
+import { StreakInterceptor } from './common/interceptors/streak.interceptor';
 import configuration from './config/configuration';
 
 @Module({
@@ -36,6 +37,11 @@ import configuration from './config/configuration';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    // Interceptors rodam depois dos guards, então request.user já existe.
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: StreakInterceptor,
     },
     RolesGuard
   ],

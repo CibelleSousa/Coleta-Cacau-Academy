@@ -23,38 +23,13 @@ export class AuthService {
         lastLoginDate: new Date()
       });
       await this.userRepository.save(user);
-    } else {
-      this.updateStreak(user);
-      await this.userRepository.save(user);
     }
-    
+
+    // A streak não é mais atualizada aqui. Fazer isso só no fluxo OAuth era
+    // justamente o bug: com JWT de um dia, quem volta com cookie válido não
+    // passa por este método. O StreakInterceptor global cobre toda requisição
+    // autenticada, inclusive o callback do Google.
     return user;
-  }
-
-  private updateStreak(user: User) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const lastLogin =  user.lastLoginDate ? new Date(user.lastLoginDate) : null;
-    if(lastLogin) {
-      lastLogin.setHours(0, 0, 0, 0);
-    }
-
-    if(!lastLogin) {
-      user.streakCount = 1;
-    } else {
-      const diffTime = today.getTime() - lastLogin.getTime();
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays === 0) {
-        return
-      } else if (diffDays === 1) {
-        user.streakCount += 1;
-      } else {
-        user.streakCount = 1;
-      }
-    }
-    user.lastLoginDate = new Date();
   }
 
   generateJwt(user: User): string {
