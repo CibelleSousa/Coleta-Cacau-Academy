@@ -17,199 +17,199 @@ export const module4: SeedModule = {
             order: 1,
             content: `Para que o aplicativo Coleta Cacau seja uma ferramenta de campo verdadeiramente eficaz, ele precisa funcionar de forma confiável em áreas rurais, onde a conexão com a internet pode ser instável ou inexistente. A capacidade de persistir os dados recebidos da Plataforma Cacau localmente, de forma segura e rápida, não é um luxo, mas uma necessidade fundamental. É aqui que o Realm DB entra como a camada de persistência offline essencial do projeto.
 
-            Ao avaliar as opções de armazenamento local para React Native, poderíamos ter considerado alternativas como o AsyncStorage, mas ele se mostrou inadequado por ser um simples sistema de chave-valor, ideal para guardar pequenas informações (como configurações do usuário ou tokens de autenticação), mas não para gerenciar os dados complexos e relacionados do Coleta Cacau, como propriedades e suas respectivas áreas homogêneas. Outra opção seria o SQLite, um banco de dados relacional poderoso, mas que introduz uma camada de complexidade significativa, exigindo a escrita de queries SQL e, muitas vezes, o uso de um ORM (Object-Relational Mapper) para traduzir os dados entre o formato de tabelas e os objetos TypeScript.
+Ao avaliar as opções de armazenamento local para React Native, poderíamos ter considerado alternativas como o AsyncStorage, mas ele se mostrou inadequado por ser um simples sistema de chave-valor, ideal para guardar pequenas informações (como configurações do usuário ou tokens de autenticação), mas não para gerenciar os dados complexos e relacionados do Coleta Cacau, como propriedades e suas respectivas áreas homogêneas. Outra opção seria o SQLite, um banco de dados relacional poderoso, mas que introduz uma camada de complexidade significativa, exigindo a escrita de queries SQL e, muitas vezes, o uso de um ORM (Object-Relational Mapper) para traduzir os dados entre o formato de tabelas e os objetos TypeScript.
 
-            O Realm foi escolhido por oferecer a robustez de um banco de dados completo com a simplicidade de trabalhar diretamente com objetos TypeScript, crucial para armazenar localmente os dados complexos vindos da API da Plataforma Cacau. Sua capacidade offline-first permite que o aplicativo Coleta Cacau continue funcionando sem internet, utilizando o banco local como um cache confiável dos dados. Embora o gerenciamento do estado da interface do usuário no Coleta Cacau seja primariamente realizado pelo Redux Toolkit (como veremos no próximo capítulo), o Realm atua como a camada de persistência essencial que garante a disponibilidade e a performance no acesso aos dados, mesmo offline.
+O Realm foi escolhido por oferecer a robustez de um banco de dados completo com a simplicidade de trabalhar diretamente com objetos TypeScript, crucial para armazenar localmente os dados complexos vindos da API da Plataforma Cacau. Sua capacidade offline-first permite que o aplicativo Coleta Cacau continue funcionando sem internet, utilizando o banco local como um cache confiável dos dados. Embora o gerenciamento do estado da interface do usuário no Coleta Cacau seja primariamente realizado pelo Redux Toolkit (como veremos no próximo capítulo), o Realm atua como a camada de persistência essencial que garante a disponibilidade e a performance no acesso aos dados, mesmo offline.
 
-            ## Objetivo 
+## Objetivo 
 
-            O objetivo deste capítulo é capacitar o leitor a compreender a arquitetura de dados do aplicativo Coleta Cacau. Ao final desta seção, o desenvolvedor será capaz de entender como os dados são modelados através de schemas, aprender a realizar as operações essenciais de CRUD (Create, Read, Update, Delete) no banco de dados local, compreender o conceito de objetos e coleções reativas e utilizar os Hooks do \`@realm/react\` para a base de dados aos componentes da interface de forma moderna e eficiente.
+O objetivo deste capítulo é capacitar o leitor a compreender a arquitetura de dados do aplicativo Coleta Cacau. Ao final desta seção, o desenvolvedor será capaz de entender como os dados são modelados através de schemas, aprender a realizar as operações essenciais de CRUD (Create, Read, Update, Delete) no banco de dados local, compreender o conceito de objetos e coleções reativas e utilizar os Hooks do \`@realm/react\` para a base de dados aos componentes da interface de forma moderna e eficiente.
 
-            ## Definição 
+## Definição 
 
-            Realm DB é um banco de dados mobile-first, orientado a objetos e reativo, projetado especificamente para o desenvolvimento de aplicativos móveis. Diferente dos bancos de dados relacionais que armazenam dados em tabelas com linhas e colunas, o Realm armazena dados como objetos, permitindo que os desenvolvedores interajam com os dados da mesma forma que interagem com qualquer outro objeto JavaScript/TypeScript.
+Realm DB é um banco de dados mobile-first, orientado a objetos e reativo, projetado especificamente para o desenvolvimento de aplicativos móveis. Diferente dos bancos de dados relacionais que armazenam dados em tabelas com linhas e colunas, o Realm armazena dados como objetos, permitindo que os desenvolvedores interajam com os dados da mesma forma que interagem com qualquer outro objeto JavaScript/TypeScript.
 
-            ## Conceitos Fundamentais 
+## Conceitos Fundamentais 
 
-            Um Schema (Esquema) é a definição formal da estrutura de um objeto que você pretende armazenar no Realm. Pense nele como uma “planta baixa” para seus dados. Ele descreve quais propriedades um objeto terá (como \`id\` e \`name\`) e qual o tipo de cada propriedade (\`string\`, \`number\`, \`Date\`, etc.).
+Um Schema (Esquema) é a definição formal da estrutura de um objeto que você pretende armazenar no Realm. Pense nele como uma “planta baixa” para seus dados. Ele descreve quais propriedades um objeto terá (como \`id\` e \`name\`) e qual o tipo de cada propriedade (\`string\`, \`number\`, \`Date\`, etc.).
 
-            No ecossistema do Realm com TypeScript, a maneira moderna e recomendada de definir schemas é usando classes que estendem \`Realm.Object\`. Esta abordagem nos dá segurança de tipo e autocompletar, tornando o código muito mais robusto e fácil de manter.
+No ecossistema do Realm com TypeScript, a maneira moderna e recomendada de definir schemas é usando classes que estendem \`Realm.Object\`. Esta abordagem nos dá segurança de tipo e autocompletar, tornando o código muito mais robusto e fácil de manter.
 
-            Vamos começar nos baseando nos dados mocados trabalhados no fim do capítulo anterior. Tínhamos definido uma Propriedade e uma Área Homogênea como:
+Vamos começar nos baseando nos dados mocados trabalhados no fim do capítulo anterior. Tínhamos definido uma Propriedade e uma Área Homogênea como:
 
-            \`\`\`typescript
-            export type HomogeneusAreaProvider = {
-                id: string,
-                name: string
+\`\`\`typescript
+export type HomogeneusAreaProvider = {
+    id: string,
+    name: string
+}
+
+export type PropertyProvider = {
+    id: string,
+    name: string,
+    areas: HomogeneusAreaProvider[]
+};
+\`\`\`
+
+Para modelar essa estrutura no Realm, criaremos duas classes, uma para \`Property\` e outra para \`HomogeneusArea\`:
+
+\`\`\`typescript
+import Realm, { ObjectSchema } from "realm";
+
+export default class HomogeneusArea extends Realm.Object<HomogeneusArea> {
+    id!: string;
+    name!: string;
+
+    static schema: ObjectSchema = {
+        name: 'HomogeneusArea',
+        properties: {
+            id: 'string',
+            name: 'string'
+        },
+        primaryKey: 'id'
+    };
+}
+\`\`\`
+
+\`\`\`typescript
+import Realm, {ObjectSchema} from "realm";
+
+export default class Properties extends Realm.Object<Properties> {
+    id!: string;
+    name!: string;
+    // 'areas será uma lista de objetos do tipo HomogeneusArea que implementaremos depois
+
+    static schema: ObjectSchema = {
+        name: 'Properties',
+        properties: {
+            id: 'string',
+            name: 'string',
+        },
+        primaryKey: 'id',
+    };
+}
+\`\`\`
+
+Por padrão, todas as propriedades em um schema são obrigatórias. Para declarar uma propriedade como opcional (permitindo que ela seja \`null\` ou \`undefined\`), você pode indicá-la tanto no tipo da classe (com \`?\`) quanto no objeto do schema (com \`optional: true\`) sendo a segunda maneira mais indicada para tipos mais complexos.
+
+Você também pode definir um valor padrão para uma propriedade. Se você criar um objeto sem especificar um valor para esse campo, o Realm usará o padrão definido. Isso é feito no tipo da classe (com \`=\`) e no objeto do schema (com \`default\`).
+
+Ademais, se você realiza consultas frequentes em uma determinada propriedade (como buscar uma propriedade pelo nome), você pode indexá-la. Isso cria uma estrutura de dados interna que torna essas buscas muito mais rápidas.
+
+Vamos explorar nossas opções aumentando o nível de complexidade da nossa classe \`Property\`:
+
+\`\`\`typescript
+import Realm, {ObjectSchema} from "realm";
+import HomogeneusArea from "./homogeneusArea.schema";
+
+export default class Properties extends Realm.Object<Properties> {
+    id!: string;
+    name!: string; // vamos indexar essa propriedade
+    notes?: string; // propriedade opcional
+    createdAt: Date =  new Date(); // propriedade com valor padrão
+    areas!: Realm.List<HomogeneusArea>; // relacionamento que veremos a seguir
+
+    static schema: ObjectSchema = {
+        name: 'Properties',
+        properties: {
+            id: 'string',
+            name: {type: 'string', indexed: true},
+            notes: 'string?',
+            createdAt: {type: 'data', default: () => new Date()},
+            areas: 'HomogeneusArea[]'
+        },
+        primaryKey: 'id',
+    };
+}
+\`\`\`
+
+Uma das maiores vantagens de um banco de dados orientado a objetos como o Realm é a capacidade de criar links diretos entre os objetos, em vez de gerenciar chaves estrangeiras manualmente como no SQL.
+
+O relacionamento de um para muitos (1 : N) é o tipo de relacionamento que já vimos, um objeto “pai” (\`Property\`) se conecta a uma lista de objetos “filhos” (\`HomogeneusArea\`).
+
+Na classe \`Properties\`, a propriedade \`areas\` é do tipo \`Realm.List<HomogeneusArea>\` e no schema a propriedade é do tipo \`HomogeneusArea[]\`.
+
+No relacionamento de um para um (1 : 1), um objeto se conecta a, no máximo, um outro objeto. Por exemplo, uma propriedade pode ter apenas uma localização (latitude, longitude). Vamos criar esse relacionamento com localização sendo uma propriedade opcional.
+
+\`\`\`typescript
+// arquivo location.schemas.ts
+import Realm, {ObjectSchema} from "realm";
+
+export default class Location extends Realm.Object<Location> {
+    latitude!: number;
+    longitude!: number;
+
+    static schema: ObjectSchema = {
+        name: 'Location',
+        embedded: true,
+        properties: {
+            latitude: 'double',
+            longitude: 'double'
+        }
+    };
+}
+\`\`\`
+
+O \`embedded\` sinaliza um objeto embarcado. Uma otimização que sinaliza \`Location\` como um objeto que só pode pertencer a um único objeto “pai” e será deletado se o seu “pai” for deletado. Agora no arquivo \`properties.schema.ts\`:
+
+\`\`\`typescript
+import Realm, {ObjectSchema} from "realm";
+import HomogeneusArea from "./homogeneusArea.schema";
+import Location from "./location.schema";
+
+export default class Properties extends Realm.Object<Properties> {
+    id!: string;
+    name!: string;
+    notes?: string;
+    createdAt: Date =  new Date();
+    areas!: Realm.List<HomogeneusArea>;
+    location?: Location
+
+    static schema: ObjectSchema = {
+        name: 'Properties',
+        properties: {
+            id: 'string',
+            name: {type: 'string', indexed: true},
+            notes: 'string?',
+            createdAt: {type: 'data', default: () => new Date()},
+            location: {
+                type: 'object',
+                objectType: 'Location',
+                optional: true
+            },
+            areas: 'HomogeneusArea[]'
+        },
+        primaryKey: 'id'
+    };
+}
+\`\`\`
+
+Relacionamentos inversos permitem que um objeto “filho” referenciar de volta o seu “pai” sem que você precise criar um link manual. Por exemplo, uma \`HomogeneusArea\` pode saber a qual \`Property\` ela pertence. Isso é feito no schema no objeto “filho”, usando a propriedade \`linkingObjects\`.
+
+\`\`\`typescript
+import Realm, { ObjectSchema } from "realm";
+import Properties from "./properties.schema";
+
+export default class HomogeneusArea extends Realm.Object<HomogeneusArea> {
+    id!: string;
+    name!: string;
+    readonly owner!: Realm.Results<Properties>; // propriedade de relacionamento inverso é sempre readonly.
+
+    static schema: ObjectSchema = {
+        name: 'HomogeneusArea',
+        properties: {
+            id: 'string',
+            name: 'string',
+            owner: {
+                type: 'linkingObjects', 
+                objectType: 'Properties', 
+                property: 'areas'
             }
-
-            export type PropertyProvider = {
-                id: string,
-                name: string,
-                areas: HomogeneusAreaProvider[]
-            };
-            \`\`\`
-
-            Para modelar essa estrutura no Realm, criaremos duas classes, uma para \`Property\` e outra para \`HomogeneusArea\`:
-
-            \`\`\`typescript
-            import Realm, { ObjectSchema } from "realm";
-
-            export default class HomogeneusArea extends Realm.Object<HomogeneusArea> {
-                id!: string;
-                name!: string;
-
-                static schema: ObjectSchema = {
-                    name: 'HomogeneusArea',
-                    properties: {
-                        id: 'string',
-                        name: 'string'
-                    },
-                    primaryKey: 'id'
-                };
-            }
-            \`\`\`
-
-            \`\`\`typescript
-            import Realm, {ObjectSchema} from "realm";
-
-            export default class Properties extends Realm.Object<Properties> {
-                id!: string;
-                name!: string;
-                // 'areas será uma lista de objetos do tipo HomogeneusArea que implementaremos depois
-
-                static schema: ObjectSchema = {
-                    name: 'Properties',
-                    properties: {
-                        id: 'string',
-                        name: 'string',
-                    },
-                    primaryKey: 'id',
-                };
-            }
-            \`\`\`
-
-            Por padrão, todas as propriedades em um schema são obrigatórias. Para declarar uma propriedade como opcional (permitindo que ela seja \`null\` ou \`undefined\`), você pode indicá-la tanto no tipo da classe (com \`?\`) quanto no objeto do schema (com \`optional: true\`) sendo a segunda maneira mais indicada para tipos mais complexos.
-
-            Você também pode definir um valor padrão para uma propriedade. Se você criar um objeto sem especificar um valor para esse campo, o Realm usará o padrão definido. Isso é feito no tipo da classe (com \`=\`) e no objeto do schema (com \`default\`).
-
-            Ademais, se você realiza consultas frequentes em uma determinada propriedade (como buscar uma propriedade pelo nome), você pode indexá-la. Isso cria uma estrutura de dados interna que torna essas buscas muito mais rápidas.
-
-            Vamos explorar nossas opções aumentando o nível de complexidade da nossa classe \`Property\`:
-
-            \`\`\`typescript
-            import Realm, {ObjectSchema} from "realm";
-            import HomogeneusArea from "./homogeneusArea.schema";
-
-            export default class Properties extends Realm.Object<Properties> {
-                id!: string;
-                name!: string; // vamos indexar essa propriedade
-                notes?: string; // propriedade opcional
-                createdAt: Date =  new Date(); // propriedade com valor padrão
-                areas!: Realm.List<HomogeneusArea>; // relacionamento que veremos a seguir
-
-                static schema: ObjectSchema = {
-                    name: 'Properties',
-                    properties: {
-                        id: 'string',
-                        name: {type: 'string', indexed: true},
-                        notes: 'string?',
-                        createdAt: {type: 'data', default: () => new Date()},
-                        areas: 'HomogeneusArea[]'
-                    },
-                    primaryKey: 'id',
-                };
-            }
-            \`\`\`
-
-            Uma das maiores vantagens de um banco de dados orientado a objetos como o Realm é a capacidade de criar links diretos entre os objetos, em vez de gerenciar chaves estrangeiras manualmente como no SQL.
-
-            O relacionamento de um para muitos (1 : N) é o tipo de relacionamento que já vimos, um objeto “pai” (\`Property\`) se conecta a uma lista de objetos “filhos” (\`HomogeneusArea\`).
-
-            Na classe \`Properties\`, a propriedade \`areas\` é do tipo \`Realm.List<HomogeneusArea>\` e no schema a propriedade é do tipo \`HomogeneusArea[]\`.
-
-            No relacionamento de um para um (1 : 1), um objeto se conecta a, no máximo, um outro objeto. Por exemplo, uma propriedade pode ter apenas uma localização (latitude, longitude). Vamos criar esse relacionamento com localização sendo uma propriedade opcional.
-
-            \`\`\`typescript
-            // arquivo location.schemas.ts
-            import Realm, {ObjectSchema} from "realm";
-
-            export default class Location extends Realm.Object<Location> {
-                latitude!: number;
-                longitude!: number;
-
-                static schema: ObjectSchema = {
-                    name: 'Location',
-                    embedded: true,
-                    properties: {
-                        latitude: 'double',
-                        longitude: 'double'
-                    }
-                };
-            }
-            \`\`\`
-
-            O \`embedded\` sinaliza um objeto embarcado. Uma otimização que sinaliza \`Location\` como um objeto que só pode pertencer a um único objeto “pai” e será deletado se o seu “pai” for deletado. Agora no arquivo \`properties.schema.ts\`:
-
-            \`\`\`typescript
-            import Realm, {ObjectSchema} from "realm";
-            import HomogeneusArea from "./homogeneusArea.schema";
-            import Location from "./location.schema";
-
-            export default class Properties extends Realm.Object<Properties> {
-                id!: string;
-                name!: string;
-                notes?: string;
-                createdAt: Date =  new Date();
-                areas!: Realm.List<HomogeneusArea>;
-                location?: Location
-
-                static schema: ObjectSchema = {
-                    name: 'Properties',
-                    properties: {
-                        id: 'string',
-                        name: {type: 'string', indexed: true},
-                        notes: 'string?',
-                        createdAt: {type: 'data', default: () => new Date()},
-                        location: {
-                            type: 'object',
-                            objectType: 'Location',
-                            optional: true
-                        },
-                        areas: 'HomogeneusArea[]'
-                    },
-                    primaryKey: 'id'
-                };
-            }
-            \`\`\`
-
-            Relacionamentos inversos permitem que um objeto “filho” referenciar de volta o seu “pai” sem que você precise criar um link manual. Por exemplo, uma \`HomogeneusArea\` pode saber a qual \`Property\` ela pertence. Isso é feito no schema no objeto “filho”, usando a propriedade \`linkingObjects\`.
-
-            \`\`\`typescript
-            import Realm, { ObjectSchema } from "realm";
-            import Properties from "./properties.schema";
-
-            export default class HomogeneusArea extends Realm.Object<HomogeneusArea> {
-                id!: string;
-                name!: string;
-                readonly owner!: Realm.Results<Properties>; // propriedade de relacionamento inverso é sempre readonly.
-
-                static schema: ObjectSchema = {
-                    name: 'HomogeneusArea',
-                    properties: {
-                        id: 'string',
-                        name: 'string',
-                        owner: {
-                            type: 'linkingObjects', 
-                            objectType: 'Properties', 
-                            property: 'areas'
-                        }
-                    },
-                    primaryKey: 'id'
-                };
-            }
-            \`\`\`
-            `
+        },
+        primaryKey: 'id'
+    };
+}
+\`\`\`
+`
         },
         {
             title: 'Operações CRUD e Guia RQL',
