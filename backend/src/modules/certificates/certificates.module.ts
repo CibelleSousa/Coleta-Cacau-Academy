@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CertificatesController } from './certificates.controller';
+import { CertificateVerificationController } from './certificate-verification.controller';
 import { CertificatesService } from './certificates.service';
 import { Lesson } from '../../database/entities/lesson.entity';
 import { UserProgress } from '../../database/entities/user-progress.entity';
@@ -18,7 +19,8 @@ import { Certification } from '../../database/entities/certification.entity';
         Certification,
         ]),
     ],
-    controllers: [CertificatesController],
+    // A rota pública de verificação fica em controller próprio, sem guards.
+    controllers: [CertificatesController, CertificateVerificationController],
     providers: [CertificatesService],
     exports: [CertificatesService],
 })

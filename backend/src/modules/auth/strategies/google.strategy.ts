@@ -31,9 +31,19 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
             return done(new UnauthorizedException('Google account must have an email'), false);
         }
 
+        // Interpolar direto num template literal materializa a string
+        // "undefined" quando o Google não envia familyName (contas sem
+        // sobrenome). O .trim() não remove, porque fica no meio — e esse
+        // nome é impresso no certificado. Juntar só as partes presentes.
+        const nomeCompleto = [name?.givenName, name?.familyName]
+            .filter((parte): parte is string => typeof parte === 'string' && parte.trim() !== '')
+            .join(' ')
+            .trim();
+
         const userDto = {
             googleId: id,
-            name: `${name.givenName} ${name.familyName}`.trim(),
+            // displayName e o e-mail são fallbacks para contas sem nome algum.
+            name: nomeCompleto || profile.displayName || emails[0].value,
             email: emails[0].value,
             avatarUrl: photos[0]?.value,
         };

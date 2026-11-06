@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -20,7 +21,46 @@ export class CertificatesService {
     @InjectRepository(Quiz) private readonly quizRepository: Repository<Quiz>,
     @InjectRepository(QuizAttempt) private readonly attemptRepository: Repository<QuizAttempt>,
     @InjectRepository(Certification) private readonly certificationRepository: Repository<Certification>,
+    private readonly configService: ConfigService,
   ) {}
+
+  /** Nome do curso, impresso no certificado e devolvido na verificação. */
+  private static readonly NOME_DO_CURSO = 'Desenvolvimento Mobile com React Native';
+
+  /**
+   * Consulta pública de autenticidade de um certificado.
+   *
+   * Devolve apenas o que já está impresso no documento. Nada de e-mail,
+   * id interno ou progresso — a rota é aberta e qualquer dado a mais aqui
+   * vazaria para quem tiver o código em mãos.
+   *
+   * Código inexistente gera 404 genérico, sem distinguir "nunca existiu" de
+   * "revogado", para não servir de oráculo a quem estiver varrendo códigos.
+   */
+  async verifyByCode(code: string) {
+    const certificate = await this.certificationRepository.findOne({
+      where: { verificationCode: code },
+      relations: ['user'],
+    });
+
+    if (!certificate) {
+      throw new NotFoundException('Certificado não encontrado.');
+    }
+
+    return {
+      valid: true,
+      studentName: certificate.user.name,
+      course: CertificatesService.NOME_DO_CURSO,
+      issuedAt: certificate.issuedAt,
+      verificationCode: certificate.verificationCode,
+    };
+  }
+
+  /** Monta a URL pública a partir da configuração, nunca chumbada no código. */
+  private buildCertificateUrl(verificationCode: string): string {
+    const base = this.configService.get<string>('frontendUrl') ?? '';
+    return `${base.replace(/\/$/, '')}/verificar/${verificationCode}`;
+  }
 
   private readonly logger = new Logger(CertificatesService.name);
 
@@ -113,17 +153,31 @@ export class CertificatesService {
         });
 
         if (!certificate) {
-            // 4. Issue new certificate
-            certificate = this.certificationRepository.create({
-                userId: user.id,
-                certificateUrl: `https://coleta-cacau.dev/certs/${user.id}`,
+            // 4. Emite o certificado. O verificationCode é gerado pelo banco,
+            // então só conhecemos seu valor depois de salvar.
+            certificate = this.certificationRepository.create({ userId: user.id });
+            await this.certificationRepository.save(certificate);
+            certificate = await this.certificationRepository.findOneOrFail({
+                where: { id: certificate.id },
             });
+        }
+
+        // A URL é derivada da configuração; se o domínio mudar, os registros
+        // antigos são corrigidos aqui em vez de ficarem apontando para o
+        // endereço anterior.
+        const urlEsperada = this.buildCertificateUrl(certificate.verificationCode);
+        if (certificate.certificateUrl !== urlEsperada) {
+            certificate.certificateUrl = urlEsperada;
             await this.certificationRepository.save(certificate);
         }
 
         // 5. Generate the PDF
         const completionDate = new Date().toLocaleDateString('pt-BR');
-        const pdfBuffer = await this.generateCertificatePdf(user.name, completionDate);
+        const pdfBuffer = await this.generateCertificatePdf(
+            user.name,
+            completionDate,
+            certificate.verificationCode,
+        );
 
         return {
             eligible: true as const,
@@ -131,6 +185,7 @@ export class CertificatesService {
                 id: certificate.id,
                 issuedAt: certificate.issuedAt,
                 certificateUrl: certificate.certificateUrl,
+                verificationCode: certificate.verificationCode,
             },
             pdfBuffer
         };
@@ -141,7 +196,11 @@ export class CertificatesService {
         return fs.existsSync(pathString) ? pathString : null;
     }
 
-    private generateCertificatePdf(studentName: string, completionDate: string): Promise<Buffer> {
+    private generateCertificatePdf(
+        studentName: string,
+        completionDate: string,
+        verificationCode?: string,
+    ): Promise<Buffer> {
         return new Promise((resolve, reject) => {
             try {
                 const doc = new PDFDocument({
@@ -190,6 +249,25 @@ export class CertificatesService {
                     .text(completionDate, 0, 495, { 
                         align: 'center', width: pageWidth 
                     });
+
+                // Código de verificação no rodapé. Discreto de propósito: é
+                // informação de conferência, não parte da arte. Sem ele
+                // impresso, o código só existiria no banco e quem recebe o
+                // PDF não teria como checar a autenticidade.
+                if (verificationCode) {
+                    // pageHeight - 19: logo abaixo do nome sob a assinatura,
+                    // que termina por volta de 570pt. Valores maiores colidem
+                    // com ele — verificado renderizando o PDF.
+                    doc.font(robotoRegularPath ?? 'Helvetica')
+                        .fontSize(6.5)
+                        .fillColor('#9a9a9a')
+                        .text(
+                            `Verifique a autenticidade em ${this.buildCertificateUrl(verificationCode)}`,
+                            0,
+                            pageHeight - 19,
+                            { align: 'center', width: pageWidth },
+                        );
+                }
 
                 doc.end();
             } catch (error) {
