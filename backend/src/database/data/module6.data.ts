@@ -17,76 +17,76 @@ export const module6: SeedModule = {
             order: 1,
             content: `No desenvolvimento do Coleta Cacau, vimos que o aplicativo precisa constantemente enviar e receber dados da Plataforma Cacau. Mas como essa comunicação acontece? 
 
-            Uma API (Application Programming Interface) Web pode ser definida como uma interface remota que permite que aplicações se comuniquem através de uma rede. Ela funciona como uma "ponte" segura e padronizada entre o seu aplicativo (o cliente) e o servidor onde os dados vivem.
+Uma API (Application Programming Interface) Web pode ser definida como uma interface remota que permite que aplicações se comuniquem através de uma rede. Ela funciona como uma "ponte" segura e padronizada entre o seu aplicativo (o cliente) e o servidor onde os dados vivem.
 
-            Se não usássemos uma API, teríamos que recorrer a métodos que trariam sérios problemas de segurança e manutenção como: Acesso Direto ao Banco de Dados e Transferência de Arquivos.
+Se não usássemos uma API, teríamos que recorrer a métodos que trariam sérios problemas de segurança e manutenção como: Acesso Direto ao Banco de Dados e Transferência de Arquivos.
 
-            No problema do acesso direto ao banco de dados, o aplicativo móvel teria que ter as credenciais (login e senha) para conectar diretamente no banco de dados do servidor. Isso é uma falha gravíssima de segurança. Se alguém descompilar o aplicativo, teria acesso total aos dados de todos os usuários. Além disso, qualquer mudança na estrutura do banco quebraria o app. Já no problema de transferência de arquivos, o servidor poderia gerar arquivos (como CSV ou Excel) periodicamente para o aplicativo baixar. O que significaria que os dados não seriam em tempo real e o processo seria lento, consumindo muitos dados móveis.
+No problema do acesso direto ao banco de dados, o aplicativo móvel teria que ter as credenciais (login e senha) para conectar diretamente no banco de dados do servidor. Isso é uma falha gravíssima de segurança. Se alguém descompilar o aplicativo, teria acesso total aos dados de todos os usuários. Além disso, qualquer mudança na estrutura do banco quebraria o app. Já no problema de transferência de arquivos, o servidor poderia gerar arquivos (como CSV ou Excel) periodicamente para o aplicativo baixar. O que significaria que os dados não seriam em tempo real e o processo seria lento, consumindo muitos dados móveis.
 
-            A API resolve isso criando uma camada de abstração. O aplicativo não precisa saber como o banco de dados funciona, qual a linguagem do servidor ou como os dados são processados ; ele só precisa saber como "pedir" o que quer.
+A API resolve isso criando uma camada de abstração. O aplicativo não precisa saber como o banco de dados funciona, qual a linguagem do servidor ou como os dados são processados ; ele só precisa saber como "pedir" o que quer.
 
-            Vale ressaltar que existem vários tipos de APIs no mercado. Você pode ouvir falar de SOAP (mais antigo e burocrático, baseado em XML), GraphQL (muito flexível, onde o cliente monta a query exata) ou gRPC (focado em altíssima performance entre servidores). Entretanto, para o Coleta Cacau, e para a vasta maioria dos aplicativos móveis modernos, escolhemos o estilo REST (Representational State Transfer).
+Vale ressaltar que existem vários tipos de APIs no mercado. Você pode ouvir falar de SOAP (mais antigo e burocrático, baseado em XML), GraphQL (muito flexível, onde o cliente monta a query exata) ou gRPC (focado em altíssima performance entre servidores). Entretanto, para o Coleta Cacau, e para a vasta maioria dos aplicativos móveis modernos, escolhemos o estilo REST (Representational State Transfer).
 
-            Isso porque, em primeiro lugar, a API REST é baseada no protocolo HTTP. Isso significa que elas são compatíveis com praticamente qualquer linguagem de programação e funcionam nativamente na internet. Além disso, esse tipo de API usa verbos padronizados (como GET para buscar e POST para criar) que tornam a intenção do código clara. Por fim, no REST, não pensamos em "executar funções", mas sim em manipular "Recursos" (como Propriedades, Áreas, Usuários) e isso se alinha perfeitamente com a modelagem de dados que fizemos no capítulo de Realm e Redux.
+Isso porque, em primeiro lugar, a API REST é baseada no protocolo HTTP. Isso significa que elas são compatíveis com praticamente qualquer linguagem de programação e funcionam nativamente na internet. Além disso, esse tipo de API usa verbos padronizados (como GET para buscar e POST para criar) que tornam a intenção do código clara. Por fim, no REST, não pensamos em "executar funções", mas sim em manipular "Recursos" (como Propriedades, Áreas, Usuários) e isso se alinha perfeitamente com a modelagem de dados que fizemos no capítulo de Realm e Redux.
 
-            ## Objetivo 
+## Objetivo 
 
-            O objetivo deste capítulo é desmistificar o funcionamento das interfaces de comunicação web e demonstrar como o aplicativo Coleta Cacau troca informações com o mundo exterior. Ao final desta seção, o desenvolvedor será capaz de compreender os princípios do estilo arquitetural REST, aprendendo a identificar Recursos (como propriedades e usuários) e a mapeá-los para Rotas (URLs) organizizadas. O leitor entenderá como os Verbos HTTP (GET, POST, PUT, DELETE) traduzem as intenções do aplicativo (CRUD) e como os Códigos de Status informam o resultado dessas operações. Além disso, abordaremos como estruturar dados em formato JSON para envio e recebimento, e discutiremos boas práticas de eficiência (como paginação e filtros) e segurança básica, essenciais para o desempenho de um aplicativo mobile que opera em redes instáveis.
+O objetivo deste capítulo é desmistificar o funcionamento das interfaces de comunicação web e demonstrar como o aplicativo Coleta Cacau troca informações com o mundo exterior. Ao final desta seção, o desenvolvedor será capaz de compreender os princípios do estilo arquitetural REST, aprendendo a identificar Recursos (como propriedades e usuários) e a mapeá-los para Rotas (URLs) organizizadas. O leitor entenderá como os Verbos HTTP (GET, POST, PUT, DELETE) traduzem as intenções do aplicativo (CRUD) e como os Códigos de Status informam o resultado dessas operações. Além disso, abordaremos como estruturar dados em formato JSON para envio e recebimento, e discutiremos boas práticas de eficiência (como paginação e filtros) e segurança básica, essenciais para o desempenho de um aplicativo mobile que opera em redes instáveis.
 
-            ## Definição 
+## Definição 
 
-            Uma API REST (Representational State Transfer) não é uma tecnologia ou uma biblioteca, mas sim um estilo arquitetural para projetar aplicações em rede. Ela define um conjunto de restrições e padrões que, quando seguidos, permitem que sistemas diferentes (como um app React Native e um servidor backend) se comuniquem de forma escalável, independente e padronizada. Em uma API REST, o foco sai de "chamar funções" e passa para a manipulação de Recursos (entidades de negócio), que são acessados através de identificadores únicos (URIs) e manipulados utilizando os métodos padrão do protocolo HTTP. O resultado é uma interface uniforme onde o servidor transfere uma "representação" do estado atual de um recurso (geralmente um JSON) para o cliente.
+Uma API REST (Representational State Transfer) não é uma tecnologia ou uma biblioteca, mas sim um estilo arquitetural para projetar aplicações em rede. Ela define um conjunto de restrições e padrões que, quando seguidos, permitem que sistemas diferentes (como um app React Native e um servidor backend) se comuniquem de forma escalável, independente e padronizada. Em uma API REST, o foco sai de "chamar funções" e passa para a manipulação de Recursos (entidades de negócio), que são acessados através de identificadores únicos (URIs) e manipulados utilizando os métodos padrão do protocolo HTTP. O resultado é uma interface uniforme onde o servidor transfere uma "representação" do estado atual de um recurso (geralmente um JSON) para o cliente.
 
-            ## O Estilo Arquitetural REST 
+## O Estilo Arquitetural REST 
 
-            O acrônimo REST (Representational State Transfer) pode parecer intimidante, mas seu conceito central é simples e poderoso. Diferente de estilos mais antigos (como RPC ou SOAP), onde o foco estava em "chamar funções no servidor" (ex: getUsuario(), salvarFazenda()), o REST muda o foco para Recursos.
+O acrônimo REST (Representational State Transfer) pode parecer intimidante, mas seu conceito central é simples e poderoso. Diferente de estilos mais antigos (como RPC ou SOAP), onde o foco estava em "chamar funções no servidor" (ex: getUsuario(), salvarFazenda()), o REST muda o foco para Recursos.
 
-            No REST, um Recurso é qualquer conceito de negócio ou entidade sobre a qual queremos guardar informações. Pense neles como os "substantivos" do seu sistema.
+No REST, um Recurso é qualquer conceito de negócio ou entidade sobre a qual queremos guardar informações. Pense neles como os "substantivos" do seu sistema.
 
-            No contexto do Coleta Cacau, ao olharmos para o protótipo feito neste documento nos capítulos anteriores, identificamos claramente os nossos recursos: Propriedade, Área Homogênea e Usuário.
+No contexto do Coleta Cacau, ao olharmos para o protótipo feito neste documento nos capítulos anteriores, identificamos claramente os nossos recursos: Propriedade, Área Homogênea e Usuário.
 
-            O ponto central do REST é que cada recurso deve ser acessível de forma independente e padronizada. O servidor não diz ao aplicativo "como" fazer as coisas (as funções), ele apenas expõe o que existe (os recursos) e permite que o aplicativo interaja com eles.
+O ponto central do REST é que cada recurso deve ser acessível de forma independente e padronizada. O servidor não diz ao aplicativo "como" fazer as coisas (as funções), ele apenas expõe o que existe (os recursos) e permite que o aplicativo interaja com eles.
 
-            ## Identificando Recursos e Rotas (URLs) 
+## Identificando Recursos e Rotas (URLs) 
 
-            Se os Recursos são "itens em um menu", as URLs (Uniform Resource Locators) são os endereços onde podemos encontrá-los. O design dessas URLs é crucial para que a API seja fácil de entender e usar (o que o livro chama de Consumer-Centric Design). Existem algumas regras que devemos seguir para desenhar rotas que se adequem à arquitetura REST de uma API.
+Se os Recursos são "itens em um menu", as URLs (Uniform Resource Locators) são os endereços onde podemos encontrá-los. O design dessas URLs é crucial para que a API seja fácil de entender e usar (o que o livro chama de Consumer-Centric Design). Existem algumas regras que devemos seguir para desenhar rotas que se adequem à arquitetura REST de uma API.
 
-            Regra 1: Use substantivos, não verbos. Como o verbo (a ação) já é definido pelo protocolo HTTP (GET, POST, etc.), a URL deve conter apenas o nome do recurso.
+Regra 1: Use substantivos, não verbos. Como o verbo (a ação) já é definido pelo protocolo HTTP (GET, POST, etc.), a URL deve conter apenas o nome do recurso.
 
-            \`\`\`text
-            // Errado: https://api.plataformacacau.com.br/getProperties (Isso é RPC, focado na ação) //
-            // Certo: https://api.plataformacacau.com.br/properties (Isso é REST, focado no recurso) //
-            \`\`\`
+\`\`\`text
+// Errado: https://api.plataformacacau.com.br/getProperties (Isso é RPC, focado na ação) //
+// Certo: https://api.plataformacacau.com.br/properties (Isso é REST, focado no recurso) //
+\`\`\`
 
-            Regra 2: Use o plural para coleções. A URL raiz de um recurso geralmente representa a "coleção" inteira daquele item no banco de dados.
+Regra 2: Use o plural para coleções. A URL raiz de um recurso geralmente representa a "coleção" inteira daquele item no banco de dados.
 
-            \`\`\`text
-            // https://api.plataformacacau.com.br/properties Representa todas as propriedades.
-            // https://api.plataformacacau.com.br/users Representa todos os usuários.
-            \`\`\`
+\`\`\`text
+// https://api.plataformacacau.com.br/properties Representa todas as propriedades.
+// https://api.plataformacacau.com.br/users Representa todos os usuários.
+\`\`\`
 
-            Regra 3: Use IDs para itens específicos. Para acessar um item único dentro da coleção, adicionamos o seu identificador único (ID) à URL.
+Regra 3: Use IDs para itens específicos. Para acessar um item único dentro da coleção, adicionamos o seu identificador único (ID) à URL.
 
-            \`\`\`text
-            // https://api.plataformacacau.com.br/properties/123 Acessa especificamente a propriedade com ID 123.
-            \`\`\`
+\`\`\`text
+// https://api.plataformacacau.com.br/properties/123 Acessa especificamente a propriedade com ID 123.
+\`\`\`
 
-            Regra 4: hierarquia e relacionamentos. Quando um recurso "pertence" a outro (como as Áreas Homogêneas pertencem a uma Propriedade), a URL deve refletir essa hierarquia. Isso torna a API intuitiva.
+Regra 4: hierarquia e relacionamentos. Quando um recurso "pertence" a outro (como as Áreas Homogêneas pertencem a uma Propriedade), a URL deve refletir essa hierarquia. Isso torna a API intuitiva.
 
-            \`\`\`text
-            // O Recurso Pai: https://api.plataformacacau.com.br/properties/123 (A Fazenda Palmeiras)
-            // O Recurso Filho: https://api.plataformacacau.com.br/properties/123/homogeneous-areas (As áreas da Fazenda Palmeiras)
-            \`\`\`
+\`\`\`text
+// O Recurso Pai: https://api.plataformacacau.com.br/properties/123 (A Fazenda Palmeiras)
+// O Recurso Filho: https://api.plataformacacau.com.br/properties/123/homogeneous-areas (As áreas da Fazenda Palmeiras)
+\`\`\`
 
-            Com base nessas regras e no protótipo feito neste documento, podemos desenhar as seguintes rotas: 
+Com base nessas regras e no protótipo feito neste documento, podemos desenhar as seguintes rotas: 
 
-            | Ação Desejada | Rota (URL) | Descrição |
-            | --- | --- | --- |
-            | Listar Propriedade | <br>\`/properties\` <br> | Retorna a lista de todas as propriedades do usuário. <br> |
-            | Detalhes da Propriedade | <br>\`/properties/{id}\` <br> | Retorna os dados completos de uma única propriedade. <br> |
-            | Áreas de uma Fazenda | <br>\`/properties/{id}/homogeneous-areas\` <br> | Retorna a lista de áreas homogêneas pertencentes àquela propriedade específica. <br> |
-            | Dados do Usuário | <br>\`/me\` <br> | Uma rota especial comum em APIs para retornar os dados do usuário logado (baseado no token). <br> |
-            `
+| Ação Desejada | Rota (URL) | Descrição |
+| --- | --- | --- |
+| Listar Propriedade | <br>\`/properties\` <br> | Retorna a lista de todas as propriedades do usuário. <br> |
+| Detalhes da Propriedade | <br>\`/properties/{id}\` <br> | Retorna os dados completos de uma única propriedade. <br> |
+| Áreas de uma Fazenda | <br>\`/properties/{id}/homogeneous-areas\` <br> | Retorna a lista de áreas homogêneas pertencentes àquela propriedade específica. <br> |
+| Dados do Usuário | <br>\`/me\` <br> | Uma rota especial comum em APIs para retornar os dados do usuário logado (baseado no token). <br> |
+`
         },
         {
             title: 'Verbos HTTP e Códigos de Status',

@@ -17,244 +17,244 @@ export const module3: SeedModule = {
             order: 1,
             content: `React Native é o framework que dá vida ao aplicativo Coleta Cacau, permitindo que a lógica escrita em JavaScript e TypeScript se transforme em uma experiência de usuário totalmente nativa para Android e iOS. Ele funciona como uma ponte (bridge) que traduz os componentes e a lógica declarados no código em seus equivalentes nativos da plataforma. No cenário de desenvolvimento multiplataforma, seu principal concorrente é o Flutter, um framework do Google que utiliza a linguagem Dart. Embora ambos os frameworks sejam excelentes em produzir aplicativos de alta performance, a grande vantagem do React Native para o nosso contexto é o aproveitamento do ecossistema JavaScript. Para uma equipe que já possui experiência com desenvolvimento web e React, a curva de aprendizado é significativamente menor, permitindo um desenvolvimento mais rápido e a utilização de uma vasta gama de bibliotecas e ferramentas já consolidadas na comunidade JavaScript. 
 
-            ## Objetivo: 
+## Objetivo: 
 
-            O objetivo desta seção é fornecer ao leitor os conceitos fundamentais do React aplicados ao desenvolvimento mobile, bem como apresentar os componentes e as ferramentas específicas do ecossistema React Native que foram utilizadas na construção do aplicativo. Ao final, o desenvolvedor deverá ser capaz de identificar os principais padrões de arquitetura do projeto e compreender como a lógica da aplicação se conecta com a interface do usuário. 
+O objetivo desta seção é fornecer ao leitor os conceitos fundamentais do React aplicados ao desenvolvimento mobile, bem como apresentar os componentes e as ferramentas específicas do ecossistema React Native que foram utilizadas na construção do aplicativo. Ao final, o desenvolvedor deverá ser capaz de identificar os principais padrões de arquitetura do projeto e compreender como a lógica da aplicação se conecta com a interface do usuário. 
 
-            ## Definição: 
+## Definição: 
 
-            É crucial diferenciar React de React Native, pois não são a mesma coisa. O React, em sua essência, é uma biblioteca JavaScript agnóstica de plataforma, cujo único propósito é construir interfaces de usuário de forma declarativa e eficiente. Ele é o "cérebro" responsável por gerenciar componentes, estado e props. Já o React Native é o framework que pega todo o poder do React e o aplica ao universo mobile, fornecendo os componentes nativos (\`<View>\`, \`<Text>\`, etc.) e a camada de comunicação (a "ponte") que interage diretamente com o sistema operacional do celular, fornecendo a camada de renderização que traduz a lógica declarativa em componentes de interface de usuário nativos e performáticos para cada sistema operacional. 
+É crucial diferenciar React de React Native, pois não são a mesma coisa. O React, em sua essência, é uma biblioteca JavaScript agnóstica de plataforma, cujo único propósito é construir interfaces de usuário de forma declarativa e eficiente. Ele é o "cérebro" responsável por gerenciar componentes, estado e props. Já o React Native é o framework que pega todo o poder do React e o aplica ao universo mobile, fornecendo os componentes nativos (\`<View>\`, \`<Text>\`, etc.) e a camada de comunicação (a "ponte") que interage diretamente com o sistema operacional do celular, fornecendo a camada de renderização que traduz a lógica declarativa em componentes de interface de usuário nativos e performáticos para cada sistema operacional. 
 
-            ## Conceitos Fundamentais: 
+## Conceitos Fundamentais: 
 
-            A ideia central do React é a de que interfaces de usuário complexas podem ser quebradas em pequenas peças isoladas e reutilizáveis, chamadas Componentes. Pense em uma tela de aplicativo: em vez de construí-la como um arquivo monolítico, nós a dividimos em componentes como Cabecalho, ListaDeItens, ItemDaLista e Botao. 
+A ideia central do React é a de que interfaces de usuário complexas podem ser quebradas em pequenas peças isoladas e reutilizáveis, chamadas Componentes. Pense em uma tela de aplicativo: em vez de construí-la como um arquivo monolítico, nós a dividimos em componentes como Cabecalho, ListaDeItens, ItemDaLista e Botao. 
 
-            \`\`\`javascript
-            function MyButton() {
-                return (
-                    <button>I'm a button</button>
-                );
-            }
-            \`\`\`
+\`\`\`javascript
+function MyButton() {
+    return (
+        <button>I'm a button</button>
+    );
+}
+\`\`\`
 
-            Cada componente gerencia seu próprio estado e lógica, e pode ser combinado com outros para formar telas completas. No React Native, a abordagem padrão e moderna é a criação de Componentes Funcionais. São, essencialmente, funções JavaScript que recebem dados (veremos isso em "Props") e retornam o que deve ser renderizado na tela. Abaixo, veja um exemplo de componente em React Native. 
+Cada componente gerencia seu próprio estado e lógica, e pode ser combinado com outros para formar telas completas. No React Native, a abordagem padrão e moderna é a criação de Componentes Funcionais. São, essencialmente, funções JavaScript que recebem dados (veremos isso em "Props") e retornam o que deve ser renderizado na tela. Abaixo, veja um exemplo de componente em React Native. 
 
-            \`\`\`typescript
-            import React from 'react';
-            import { Text, View } from 'react-native';
+\`\`\`typescript
+import React from 'react';
+import { Text, View } from 'react-native';
 
-            // Este é um componente funcional simples chamado 'BoasVindas'.
-            // Ele recebe 'props' e retorna um elemento de UI.
-            type Name = {
-                name: string
-            }
+// Este é um componente funcional simples chamado 'BoasVindas'.
+// Ele recebe 'props' e retorna um elemento de UI.
+type Name = {
+    name: string
+}
 
-            function BoasVindas(props: Name) {
-                return (
-                    <View>
-                        <Text>Seja bem-vindo ao Coleta Cacau, {props.name}!</Text>
-                    </View>
-                );
-            }
-            \`\`\`
+function BoasVindas(props: Name) {
+    return (
+        <View>
+            <Text>Seja bem-vindo ao Coleta Cacau, {props.name}!</Text>
+        </View>
+    );
+}
+\`\`\`
 
-            A sintaxe que se parece com HTML no exemplo acima é chamada de JSX (JavaScript XML). Ela nos permite escrever a estrutura da nossa UI de forma declarativa e familiar, diretamente no código JavaScript. 
+A sintaxe que se parece com HTML no exemplo acima é chamada de JSX (JavaScript XML). Ela nos permite escrever a estrutura da nossa UI de forma declarativa e familiar, diretamente no código JavaScript. 
 
-            É importante entender que o JSX não é HTML e não é executado diretamente pelo dispositivo. Ele é um "facilitador", ou seja, um atalho que é convertido para chamadas de funções \`React.createElement()\` durante o processo de compilação. 
+É importante entender que o JSX não é HTML e não é executado diretamente pelo dispositivo. Ele é um "facilitador", ou seja, um atalho que é convertido para chamadas de funções \`React.createElement()\` durante o processo de compilação. 
 
-            \`\`\`javascript
-            const elemento = <Text>Olá, produtor!</Text>;
+\`\`\`javascript
+const elemento = <Text>Olá, produtor!</Text>;
 
-            // Por debaixo dos panos:
-            const elemento = React.createElement(Text, null, 'Olá, produtor!');
-            \`\`\`
+// Por debaixo dos panos:
+const elemento = React.createElement(Text, null, 'Olá, produtor!');
+\`\`\`
 
-            Você pode injetar qualquer expressão JavaScript (variáveis, funções, etc.) dentro do JSX ao envolvê-la com chaves. 
+Você pode injetar qualquer expressão JavaScript (variáveis, funções, etc.) dentro do JSX ao envolvê-la com chaves. 
 
-            \`\`\`javascript
-            const nomeProdutor = "João";
-            const elemento = <Text>Produtor: {nomeProdutor.toUpperCase()}</Text>;
-            \`\`\`
+\`\`\`javascript
+const nomeProdutor = "João";
+const elemento = <Text>Produtor: {nomeProdutor.toUpperCase()}</Text>;
+\`\`\`
 
-            Um componente deve sempre retornar um único elemento pai. Se precisar retornar múltiplos elementos sem um \`<View>\` para envolvê-los, você pode usar um Fragmento (\`<>...</>\`). 
+Um componente deve sempre retornar um único elemento pai. Se precisar retornar múltiplos elementos sem um \`<View>\` para envolvê-los, você pode usar um Fragmento (\`<>...</>\`). 
 
-            \`\`\`javascript
-            // Correto
-            return (
-                <View>
-                    <Text>Título</Text>
-                    <Text>Subtítulo</Text>
-                </View>
-            );
+\`\`\`javascript
+// Correto
+return (
+    <View>
+        <Text>Título</Text>
+        <Text>Subtítulo</Text>
+    </View>
+);
 
-            // Correto usando Fragmento
-            return (
-                <>
-                    <Text>Título</Text>
-                    <Text>Subtítulo</Text>
-                </>
-            );
-            \`\`\`
+// Correto usando Fragmento
+return (
+    <>
+        <Text>Título</Text>
+        <Text>Subtítulo</Text>
+    </>
+);
+\`\`\`
 
-            Se os Componentes são como funções JavaScript, as Props (abreviação de "propriedades") são seus argumentos. É a maneira como um componente pai passa dados para um componente filho, tornando-os dinâmicos e reutilizáveis. 
+Se os Componentes são como funções JavaScript, as Props (abreviação de "propriedades") são seus argumentos. É a maneira como um componente pai passa dados para um componente filho, tornando-os dinâmicos e reutilizáveis. 
 
-            As props são recebidas como um único objeto no primeiro argumento da função do componente e a regra de ouro é: as props são somente leitura (read-only).  Um componente nunca deve modificar as próprias props. Elas vêm de cima para baixo (do pai para o filho), e essa regra garante que a aplicação seja previsível. 
+As props são recebidas como um único objeto no primeiro argumento da função do componente e a regra de ouro é: as props são somente leitura (read-only).  Um componente nunca deve modificar as próprias props. Elas vêm de cima para baixo (do pai para o filho), e essa regra garante que a aplicação seja previsível. 
 
-            Veja o nosso componente BoasVindas sendo usado por um componente "pai" chamado App: 
+Veja o nosso componente BoasVindas sendo usado por um componente "pai" chamado App: 
 
-            \`\`\`typescript
-            import React from 'react';
-            import { Text, View } from 'react-native';
+\`\`\`typescript
+import React from 'react';
+import { Text, View } from 'react-native';
 
-            // Definimos a "forma" das nossas props usando um 'type' do TypeScript.
-            type BoasVindasProps = {
-                nome: string;
-            };
+// Definimos a "forma" das nossas props usando um 'type' do TypeScript.
+type BoasVindasProps = {
+    nome: string;
+};
 
-            // O componente filho que recebe os dados
-            function BoasVindas(props: BoasVindasProps) {
-                return (
-                    <View>
-                        <Text>Seja bem-vindo(a) ao Coleta Cacau, {props.nome}!</Text>
-                    </View>
-                );
-            }
+// O componente filho que recebe os dados
+function BoasVindas(props: BoasVindasProps) {
+    return (
+        <View>
+            <Text>Seja bem-vindo(a) ao Coleta Cacau, {props.nome}!</Text>
+        </View>
+    );
+}
 
-            // O componente pai que envia os dados
-            export default function App() {
-                return (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        {/* Usamos o componente BoasVindas duas vezes, com props diferentes */}
-                        <BoasVindas nome="Cibelle" />
-                        <BoasVindas nome="Produtor Anônimo" />
-                    </View>
-                );
-            }
-            \`\`\`
+// O componente pai que envia os dados
+export default function App() {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {/* Usamos o componente BoasVindas duas vezes, com props diferentes */}
+            <BoasVindas nome="Cibelle" />
+            <BoasVindas nome="Produtor Anônimo" />
+        </View>
+    );
+}
+\`\`\`
 
-            Dica de código: É muito comum usar a desestruturação para extrair as props diretamente nos parâmetros da função, deixando o código mais limpo. 
+Dica de código: É muito comum usar a desestruturação para extrair as props diretamente nos parâmetros da função, deixando o código mais limpo. 
 
-            \`\`\`typescript
-            import React from 'react';
-            import { Text, View } from 'react-native';
+\`\`\`typescript
+import React from 'react';
+import { Text, View } from 'react-native';
 
-            // Definimos a "forma" das nossas props usando um 'type' do TypeScript.
-            type BoasVindasProps = {
-                nome: string;
-            };
+// Definimos a "forma" das nossas props usando um 'type' do TypeScript.
+type BoasVindasProps = {
+    nome: string;
+};
 
-            // O componente filho que recebe os dados
-            function BoasVindas({nome}: BoasVindasProps) {
-                return (
-                    <View>
-                        <Text>Seja bem-vindo(a) ao Coleta Cacau, {nome}!</Text>
-                    </View>
-                );
-            }
+// O componente filho que recebe os dados
+function BoasVindas({nome}: BoasVindasProps) {
+    return (
+        <View>
+            <Text>Seja bem-vindo(a) ao Coleta Cacau, {nome}!</Text>
+        </View>
+    );
+}
 
-            // O componente pai que envia os dados
-            export default function App() {
-                return (
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        {/* Usamos o componente BoasVindas duas vezes, com props diferentes */}
-                        <BoasVindas nome="Cibelle" />
-                        <BoasVindas nome="Produtor Anônimo" />
-                    </View>
-                );
-            }
-            \`\`\`
+// O componente pai que envia os dados
+export default function App() {
+    return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            {/* Usamos o componente BoasVindas duas vezes, com props diferentes */}
+            <BoasVindas nome="Cibelle" />
+            <BoasVindas nome="Produtor Anônimo" />
+        </View>
+    );
+}
+\`\`\`
 
-            Enquanto as props são dados que vêm de fora do componente, o State (estado) é a memória interna do componente. É um conjunto de informações que o componente gerencia e que pode mudar ao longo do tempo, geralmente como resultado de uma interação do usuário. É o que torna os aplicativos interativos. 
+Enquanto as props são dados que vêm de fora do componente, o State (estado) é a memória interna do componente. É um conjunto de informações que o componente gerencia e que pode mudar ao longo do tempo, geralmente como resultado de uma interação do usuário. É o que torna os aplicativos interativos. 
 
-            Em componentes funcionais, não podemos simplesmente criar uma variável com \`let\` e esperar que a tela se atualize quando ela mudar. Para gerenciar o estado, usamos Hooks. 
+Em componentes funcionais, não podemos simplesmente criar uma variável com \`let\` e esperar que a tela se atualize quando ela mudar. Para gerenciar o estado, usamos Hooks. 
 
-            O principal hook é o \`useState\`. Você chama \`useState\` passando um valor inicial para o seu estado e ele te retorna um array com exatamente dois itens: o valor do estado atual e uma função para atualizar esse estado. 
+O principal hook é o \`useState\`. Você chama \`useState\` passando um valor inicial para o seu estado e ele te retorna um array com exatamente dois itens: o valor do estado atual e uma função para atualizar esse estado. 
 
-            Nunca modifique o estado diretamente. Sempre use a função de atualização fornecida pelo \`useState\`. É ao chamar essa função que você informa ao React que o estado mudou, e ele se encarrega de "re-renderizar" o componente na tela com o novo valor. 
+Nunca modifique o estado diretamente. Sempre use a função de atualização fornecida pelo \`useState\`. É ao chamar essa função que você informa ao React que o estado mudou, e ele se encarrega de "re-renderizar" o componente na tela com o novo valor. 
 
-            \`\`\`javascript
-            import React, { useState } from 'react';
-            import { Text, View, Button } from 'react-native';
+\`\`\`javascript
+import React, { useState } from 'react';
+import { Text, View, Button } from 'react-native';
 
-            function Contador() {
-                // 1. Chamamos useState com o valor inicial 0.
-                // 2. Ele retorna 'likes' (o valor atual) e 'setLikes' (a função para atualizá-lo).
-                const [likes, setLikes] = useState(0);
+function Contador() {
+    // 1. Chamamos useState com o valor inicial 0.
+    // 2. Ele retorna 'likes' (o valor atual) e 'setLikes' (a função para atualizá-lo).
+    const [likes, setLikes] = useState(0);
 
-                return (
-                    <View>
-                        <Text style={{ fontSize: 24, margin: 10 }}>Likes: {likes}</Text>
-                        <Button
-                            title="👍 Curtir"
-                            onPress={() => {
-                            // 3. Ao clicar, chamamos a função 'setLikes' para atualizar o estado.
-                            // O React irá re-renderizar o componente com o novo valor.
-                            setLikes(likes + 1);
-                            }}
-                        />
-                    </View>
-                );
-            }
-            \`\`\`
+    return (
+        <View>
+            <Text style={{ fontSize: 24, margin: 10 }}>Likes: {likes}</Text>
+            <Button
+                title="👍 Curtir"
+                onPress={() => {
+                // 3. Ao clicar, chamamos a função 'setLikes' para atualizar o estado.
+                // O React irá re-renderizar o componente com o novo valor.
+                setLikes(likes + 1);
+                }}
+            />
+        </View>
+    );
+}
+\`\`\`
 
-            Até agora, vimos como um componente renderiza a UI com base em suas props e state. Mas e se um componente precisar fazer algo que não está diretamente relacionado à renderização? Como por exemplo: buscar dados de uma API quando a tela carrega, configurar uma assinatura (como um timer ou a localização do GPS), mudar o título de uma tela e etc. 
+Até agora, vimos como um componente renderiza a UI com base em suas props e state. Mas e se um componente precisar fazer algo que não está diretamente relacionado à renderização? Como por exemplo: buscar dados de uma API quando a tela carrega, configurar uma assinatura (como um timer ou a localização do GPS), mudar o título de uma tela e etc. 
 
-            Essas operações são chamadas de Efeitos Colaterais (Side Effects), pois afetam coisas fora do escopo do componente. O lugar correto para lidar com eles é no hook \`useEffect\`. Ele permite que executemos uma função "ao lado", após a renderização do componente. 
+Essas operações são chamadas de Efeitos Colaterais (Side Effects), pois afetam coisas fora do escopo do componente. O lugar correto para lidar com eles é no hook \`useEffect\`. Ele permite que executemos uma função "ao lado", após a renderização do componente. 
 
-            Este hook recebe dois argumentos: uma função (o efeito) e um array de dependências (opcional). O array de dependências é a parte mais importante, pois ele controla quando o efeito deve ser executado novamente. 
+Este hook recebe dois argumentos: uma função (o efeito) e um array de dependências (opcional). O array de dependências é a parte mais importante, pois ele controla quando o efeito deve ser executado novamente. 
 
-            Se o array estiver vazio, o efeito roda apenas uma vez, logo após a primeira renderização do componente. Perfeito para buscar dados iniciais. Com dependências, o efeito roda na primeira renderização e sempre que qualquer valor dentro do array mudar. Útil para, por exemplo, buscar novos dados quando um ID de usuário (que vem via props) muda. 
+Se o array estiver vazio, o efeito roda apenas uma vez, logo após a primeira renderização do componente. Perfeito para buscar dados iniciais. Com dependências, o efeito roda na primeira renderização e sempre que qualquer valor dentro do array mudar. Útil para, por exemplo, buscar novos dados quando um ID de usuário (que vem via props) muda. 
 
-            Sem array, o efeito roda após toda e qualquer renderização. Use com muito cuidado, pois pode causar loops infinitos. 
+Sem array, o efeito roda após toda e qualquer renderização. Use com muito cuidado, pois pode causar loops infinitos. 
 
-            \`\`\`typescript
-            import React, { useState, useEffect } from 'react';
-            import { Text, View, ActivityIndicator } from 'react-native';
+\`\`\`typescript
+import React, { useState, useEffect } from 'react';
+import { Text, View, ActivityIndicator } from 'react-native';
 
-            interface User {
-                nome: string;
-                email: string;
-            }
+interface User {
+    nome: string;
+    email: string;
+}
 
-            type PerfilDoUsuarioProps = {
-                idDoUsuario : number
-            }
+type PerfilDoUsuarioProps = {
+    idDoUsuario : number
+}
 
-            function PerfilDoUsuario({ idDoUsuario } : PerfilDoUsuarioProps) {
-                const [usuario, setUsuario] = useState<User | null>(null); // verifique os Types Generics na sessão TypeScript
-                const [carregando, setCarregando] = useState(true);
+function PerfilDoUsuario({ idDoUsuario } : PerfilDoUsuarioProps) {
+    const [usuario, setUsuario] = useState<User | null>(null); // verifique os Types Generics na sessão TypeScript
+    const [carregando, setCarregando] = useState(true);
 
-                useEffect(() => {
-                    // Este código será executado depois que o componente for renderizado
-                    console.log(\`Buscando dados para o usuário com ID: \${idDoUsuario}\`);
+    useEffect(() => {
+        // Este código será executado depois que o componente for renderizado
+        console.log(\`Buscando dados para o usuário com ID: \${idDoUsuario}\`);
 
-                    // Simula uma chamada de API
-                    fetch(\`https://api.ficticia.com/users/\${idDoUsuario}\`)
-                    .then(response => response.json())
-                    .then(data => {
-                        setUsuario(data); // Atualiza o estado com os dados recebidos
-                        setCarregando(false); // Para de mostrar o loading
-                    });
+        // Simula uma chamada de API
+        fetch(\`https://api.ficticia.com/users/\${idDoUsuario}\`)
+        .then(response => response.json())
+        .then(data => {
+            setUsuario(data); // Atualiza o estado com os dados recebidos
+            setCarregando(false); // Para de mostrar o loading
+        });
 
-                }, [idDoUsuario]); // Array de dependências: refaz a busca se o idDoUsuario mudar
+    }, [idDoUsuario]); // Array de dependências: refaz a busca se o idDoUsuario mudar
 
-                if (carregando) {
-                    return <ActivityIndicator size="large" color="#0000ff" />;
-                }
+    if (carregando) {
+        return <ActivityIndicator size="large" color="#0000ff" />;
+    }
 
-                if (!usuario) {
-                    return <Text>Não foi possível carregar os dados do usuário.</Text>;
-                }
+    if (!usuario) {
+        return <Text>Não foi possível carregar os dados do usuário.</Text>;
+    }
 
-                return (
-                    <View>
-                        <Text>Nome do Usuário: {usuario.nome}</Text>
-                        <Text>Email: {usuario.email}</Text>
-                    </View>
-                );
-            }
-            \`\`\`
-            `
+    return (
+        <View>
+            <Text>Nome do Usuário: {usuario.nome}</Text>
+            <Text>Email: {usuario.email}</Text>
+        </View>
+    );
+}
+\`\`\`
+`
         },
         {
             title: 'Core Components, Estilização e Context API',
