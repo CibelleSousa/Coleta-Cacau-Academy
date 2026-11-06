@@ -1271,7 +1271,7 @@ Após sucesso digite o comando: \`cd exemplo1\` e em seguida \`code\`.
 
 O Visual Studio Code deve abrir um template de projeto em React-Native que foi criado em seu Disco Local. Abaixo uma imagem para referência.
 
-![Visual Studio Code com template do React Native](COLE_A_URL_DA_IMAGEM_AQUI)
+![Visual Studio Code com template do React Native](/content/modulo3/vscode-template-react-native.webp)
 
 O primeiro passo é garantir que você irá conseguir rodar esse template no Android Studio. Então abra-o, clique em “More Actions” e “Virtual Device Manager”. Você deve criar um AVD (tenha sempre em mente as recomendações oficiais da documentação do React-Native). 
 
@@ -1283,7 +1283,7 @@ Abra um novo terminal, ainda no VSCode, e digite o comando: \`npm run android\`.
 
 Caso você tenha seguido todos os passos corretamente até aqui, você deve estar vendo o template rodar sem problemas num simulador Android. Imagem de referência abaixo.
 
-![Template rodando no simulador Android](COLE_A_URL_DA_IMAGEM_AQUI)
+![Template rodando no simulador Android](/content/modulo3/template-simulador-android.webp)
 
 Em seguida, digite em seu terminal o comando: \`md src && cd src && md components screens routes types\`. Este comando deve criar a pasta “src” e as subpastas “components”, “screens”, “routes” e “types” dentro desta.  (Certifique-se de estar dentro da pasta exemplo1 para rodar este comando). 
 
@@ -1447,7 +1447,7 @@ const styles = StyleSheet.create ({
 
 Na tela do seu simulador deve ter algo como: 
 
-![Lista de propriedades no simulador](COLE_A_URL_DA_IMAGEM_AQUI)
+![Lista de propriedades no simulador](/content/modulo3/lista-propriedades-simulador.webp)
 
 Entretanto, nessa tela desejamos criar uma lista de propriedades do usuário.  Então, precisamos de uma “base de dados” para simular essa lista. Por enquanto, vamos utilizar um arquivo com dados mocados. Crie uma pasta chamada “data” e dentro dela crie os arquivos: \`mockedProperty.type.ts\` e \`mockedProperty.ts\`. 
 
@@ -1595,7 +1595,7 @@ const styles = StyleSheet.create ({
 
 Seu simulador deve estar parecido com a tela abaixo: 
 
-![Simulador com lista de fazendas e ícones](COLE_A_URL_DA_IMAGEM_AQUI)
+![Simulador com lista de fazendas e ícones](/content/modulo3/lista-fazendas-icones.webp)
 
 Agora, vamos montar a tela \`HomogeneusArea\`. Para isso, vamos precisar alterar os dados mocados para que agora as áreas homogêneas sejam representadas. Além disso, algumas mudanças serão necessárias em \`ItemList\` e \`ItemProvider\` para que eles lidem com os dados de uma maneira mais genérica, afinal, esses componentes devem renderizar tanto a lista de propriedades quanto a lista de áreas homogêneas. 
 
@@ -1930,7 +1930,9 @@ const styles = StyleSheet.create ({
 
 Se tudo tiver corrido bem, você deve obter telas parecidas como as imagens abaixo: 
 
-![Telas de Propriedades e Áreas Homogêneas funcionando](COLE_A_URL_DA_IMAGEM_AQUI)
+![Tela Property com a lista de propriedades](/content/modulo3/tela-property.webp)
+
+![Tela HomogeneusArea com as áreas homogêneas](/content/modulo3/tela-homogeneus-area.webp)
 
 Perceba que apesar de funcional, a navegação ainda precisa de melhorias, afinal, o ideal é que o usuário veja em sua tela a quem aquelas áreas homogêneas pertencem para que não se perca em meio a navegação. 
 
@@ -1996,13 +1998,17 @@ Observe que o título da tela de áreas homogêneas é feito de forma que a Prop
 
 Essa solução que adotamos não é a melhor possível, pois enfrentaremos problemas quando o título for muito grande.  Mas por enquanto é suficiente para os nossos objetivos. Se tudo tiver corrido bem o resultado será semelhante às telas abaixo: 
 
-![Header customizado nas telas de navegação](COLE_A_URL_DA_IMAGEM_AQUI)
+![Header customizado na tela de Propriedades](/content/modulo3/header-customizado-propriedades.webp)
+
+![Header customizado na tela de Áreas Homogêneas](/content/modulo3/header-customizado-areas-homogeneas.webp)
 
 Nosso próximo passo será implementar a barra de navegação inferior que nos permitirá navegar para as telas Profile e About de nosso aplicativo. 
 
 Primeiramente faça as telas Profile e About. Lembre-se que estamos trabalhando com dados mocados nesse exercício, então para pôr em prática o uso de Props para passar os dados para um componente, crie um arquivo de dados mocados para um usuário fictício.  Por enquanto, não nos preocuparemos em ligar esses novos dados mocados aos dados de propriedades. Abaixo imagens para referência: 
 
-![Telas Profile e About com dados mocados](COLE_A_URL_DA_IMAGEM_AQUI)
+![Tela Profile com os dados do coletor](/content/modulo3/tela-profile.webp)
+
+![Tela About com as informações do aplicativo](/content/modulo3/tela-about.webp)
 
 Uma vez que tenha feito-as, vamos começar a implementar nossa navegação principal por meio de uma barra de navegação inferior.  Comece criando o arquivo \`TabNavigator.tsx\` dentro da pasta routes. Iremos criar nossa barra de navegação dentro deste arquivo e esta irá aninhar nossa stack criada anteriormente e as telas \`About.tsx\` e \`Profile.tsx\`. 
 
@@ -2141,7 +2147,7 @@ Outra coisa importante de notar é que é aqui que passamos o booleano utilizado
 
 Se tudo tiver corrido bem, você deve ter uma aplicação parecida com as imagens abaixo. 
 
-![Aplicação final com Tab Navigator e ícones customizados](COLE_A_URL_DA_IMAGEM_AQUI)
+![Aplicação final com Tab Navigator e ícones customizados](/content/modulo3/app-final-tab-navigator.webp)
 
 Este projeto está disponível neste repositório. (inserir link depois)
 `

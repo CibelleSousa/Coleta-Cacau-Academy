@@ -115,6 +115,8 @@ const animal = {
 // animal. Identifier expected. (property) age: number, name: string
 \`\`\`
 
+![Autocomplete do VS Code sugerindo as propriedades inferidas do objeto](/content/modulo2/autocomplete-inferencia-tipos.webp)
+
 No exemplo acima, ao declarar o objeto animal, o TypeScript infere que ele possui as propriedades name (string) e age (number), oferecendo autocompletar e segurança sem a necessidade de uma declaração de tipo explícita para variáveis simples.
 
 Às vezes, você, como desenvolvedor, sabe mais sobre o tipo de um valor do que o TypeScript. A asserção de tipo (Type Assertions) é uma forma de dizer ao compilador "confie em mim, eu sei que este valor é deste tipo". É muito comum interagir com o DOM ou com APIs que não são totalmente tipadas.
@@ -626,6 +628,10 @@ new Date()
 // Overload 3/4 Date(value: number | string): Date
 new Date()
 \`\`\`
+
+![Tooltip do VS Code mostrando a sobrecarga 1/4 do construtor Date](/content/modulo2/overload-date-1-4.webp)
+
+![Tooltip do VS Code mostrando a sobrecarga 3/4 do construtor Date](/content/modulo2/overload-date-3-4.webp)
 
 Podemos criar nossos próprios overloads de uma maneira simples.
 
