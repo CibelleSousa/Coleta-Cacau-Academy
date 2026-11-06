@@ -23,6 +23,14 @@ export class AuthService {
         lastLoginDate: new Date()
       });
       await this.userRepository.save(user);
+    } else if (user.name !== profile.name || user.avatarUrl !== profile.avatarUrl) {
+      // Mantém nome e foto em sincronia com o Google a cada login. Antes,
+      // os dados do perfil só eram gravados na criação da conta: trocar o
+      // nome no Google não refletia aqui, e nomes gravados de forma
+      // incorreta ficavam congelados para sempre.
+      user.name = profile.name;
+      user.avatarUrl = profile.avatarUrl ?? user.avatarUrl;
+      await this.userRepository.save(user);
     }
 
     // A streak não é mais atualizada aqui. Fazer isso só no fluxo OAuth era
